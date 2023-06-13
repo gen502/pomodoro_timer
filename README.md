@@ -21,7 +21,7 @@ npm run electron:serve
 ```
 App.vueとかを変更して保存するとすぐに反映されます
 
-各自ブランチを切って適当に動かしてもらうと良いと思います.
+各自ブランチを切って適当に編集して動かしてもらうと良いと思います.
 
 
 ### Customize configuration
