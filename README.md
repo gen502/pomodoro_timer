@@ -1,7 +1,7 @@
 # pomodoro_timer
 Vue CLI Plugin Electron Builderを使うのが良さそうだったのでこれにしました.ファイル構成はまだ全部は把握しきれてないです(-_-;)
 
-バージョンは以下の通りですが、今はあまり気にしなくていいと思います
+バージョンは以下の通りです
 
 node.js
 v16.13.0
@@ -17,6 +17,7 @@ npm install -g @vue/cli
 
 ### Compiles and hot-reloads for development
 ```
+vue add electron-builder //毎回やる必要はないかも
 npm run electron:serve
 ```
 App.vueとかを変更して保存するとすぐに反映されます
