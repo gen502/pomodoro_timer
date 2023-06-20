@@ -1,4 +1,4 @@
-<!-- <template>
+<!--<template>
   <img alt="Vue logo" src="./assets/logo.png">
   <HelloWorld msg="Hello World!"/>
 </template>
@@ -23,9 +23,9 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-</style> -->
+</style>-->
 
-<template>
+<!-- template>
   <div class="timer">
     <h1>{{ formatTime }}</h1>
     <button @click="startTimer" v-if="!timerRunning">Start</button>
@@ -39,7 +39,9 @@ export default {
     return {
       timerRunning: false,
       timeLeft: 1500, // 25 minutes in seconds
-      timer: null
+      timer: null,
+      fullCircle: 565, // Circumference of full circle (2 * π * radius)
+      gaugeOffset: 0 // Initial gauge offset
     };
   },
   computed: {
@@ -55,6 +57,7 @@ export default {
       this.timer = setInterval(() => {
         if (this.timeLeft > 0) {
           this.timeLeft--;
+          this.gaugeOffset = ((this.fullCircle * (1500 - this.timeLeft)) / 1500).toFixed(2);
         } else {
           this.stopTimer();
           // Timer finished, do something here
@@ -81,5 +84,30 @@ button {
   font-size: 24px;
   padding: 10px 20px;
 }
-</style>
+</style>-->
 
+<template>
+  <SettingVue msg="Hello World!" />
+</template>
+
+<script>
+import SettingVue from './components/setting.vue'
+
+export default {
+  name: 'App',
+  components: {
+    SettingVue
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
