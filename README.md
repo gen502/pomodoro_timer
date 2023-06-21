@@ -13,11 +13,11 @@ npm
 すでにインストールしている場合は必要ないです(vue -Vとかで何か出れば多分大丈夫)
 ```
 npm install -g @vue/cli
+vue add electron-builder
 ```
 
 ### Compiles and hot-reloads for development
 ```
-vue add electron-builder //毎回やる必要はないかも
 npm run electron:serve
 ```
 App.vueとかを変更して保存するとすぐに反映されます
