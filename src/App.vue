@@ -26,60 +26,29 @@ export default {
 </style> -->
 
 <template>
-  <div class="timer">
-    <h1>{{ formatTime }}</h1>
-    <button @click="startTimer" v-if="!timerRunning">Start</button>
-    <button @click="stopTimer" v-if="timerRunning">Stop</button>
+  <div id="app">
+    <FirstTimer />
   </div>
 </template>
 
 <script>
+import FirstTimer from './components/FirstTimer.vue'
+
 export default {
-  data() {
-    return {
-      timerRunning: false,
-      timeLeft: 1500, // 25 minutes in seconds
-      timer: null
-    };
-  },
-  computed: {
-    formatTime() {
-      const minutes = Math.floor(this.timeLeft / 60);
-      const seconds = this.timeLeft % 60;
-      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-  },
-  methods: {
-    startTimer() {
-      this.timerRunning = true;
-      this.timer = setInterval(() => {
-        if (this.timeLeft > 0) {
-          this.timeLeft--;
-        } else {
-          this.stopTimer();
-          // Timer finished, do something here
-        }
-      }, 1000);
-    },
-    stopTimer() {
-      this.timerRunning = false;
-      clearInterval(this.timer);
-    }
+  name: 'App',
+  components: {
+    FirstTimer
   }
-};
+}
 </script>
 
-<style scoped>
-.timer {
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-align: center;
-}
-h1 {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-button {
-  font-size: 24px;
-  padding: 10px 20px;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>
-
