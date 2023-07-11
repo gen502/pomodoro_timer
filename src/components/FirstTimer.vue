@@ -210,8 +210,4 @@ export default {
     font-size: 24px;
     font-weight: bold;
 }
-
-.icon svg {
-    fill: #FFFFFF;
-}
 </style>
