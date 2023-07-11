@@ -1,3 +1,40 @@
+<template>
+  <div>
+    <!-- <StretchTime/> -->
+    <FeedBack/>
+  </div>
+</template>
+
+
+<script>
+
+// import StretchTime from './components/StretchTime.vue'
+
+// export default {
+//   name: 'App',
+//   components: {
+//     StretchTime
+//   }
+// }
+
+
+import FeedBack from './components/FeedBack.vue'
+
+export default {
+  name: 'App',
+  components: {
+    FeedBack
+  }
+}
+
+</script>
+
+<style scoped>
+
+</style>
+
+
+
 <!-- <template>
   <img alt="Vue logo" src="./assets/logo.png">
   <HelloWorld msg="Hello World!"/>
@@ -25,7 +62,7 @@ export default {
 }
 </style> -->
 
-<template>
+<!-- <template>
   <div class="timer">
     <h1>{{ formatTime }}</h1>
     <button @click="startTimer" v-if="!timerRunning">Start</button>
@@ -81,5 +118,6 @@ button {
   font-size: 24px;
   padding: 10px 20px;
 }
-</style>
+
+</style> -->
 
