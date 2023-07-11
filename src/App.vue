@@ -1,31 +1,31 @@
 <template>
   <div>
-    <!-- <StretchTime/> -->
-    <FeedBack/>
+    <StretchTime/>
+    <!-- <FeedBack/> -->
   </div>
 </template>
 
 
 <script>
 
-// import StretchTime from './components/StretchTime.vue'
-
-// export default {
-//   name: 'App',
-//   components: {
-//     StretchTime
-//   }
-// }
-
-
-import FeedBack from './components/FeedBack.vue'
+import StretchTime from './components/StretchTime.vue'
 
 export default {
   name: 'App',
   components: {
-    FeedBack
+    StretchTime
   }
 }
+
+
+// import FeedBack from './components/FeedBack.vue'
+
+// export default {
+//   name: 'App',
+//   components: {
+//     FeedBack
+//   }
+// }
 
 </script>
 

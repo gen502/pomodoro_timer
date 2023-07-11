@@ -15,7 +15,10 @@
             </div>
     
         </div> 
-        <div class="comment2">フィードバックありがとうございます！お疲れ様でした！</div>   
+        <div class="comment2">フィードバックありがとうございます！お疲れ様でした！</div>  
+        <div class="backbutton">
+            <div class="backtext">戻る</div>
+        </div>
 
     </div>
 </template>
@@ -87,5 +90,24 @@ export default {
     color: #382823;
     font-weight:bold;
     font-size: 20px;
+}
+
+.backbutton{
+    width: 120px;
+    height: 40px;
+    border-radius: 20px;
+    background: #4FA095;
+    margin-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    box-shadow: 0 0 5px #737373;
+}
+
+.backtext{
+    font-weight:bold;
+    text-align: center;
+    padding-top: 7px;
+    color: #FFFBEC;
 }
 </style>
