@@ -2,7 +2,7 @@
     <div class="FeedBack">
 
         <div class="comment1">今回のストレッチはどうでしたか？</div>
-        <div class="StretchFB">
+        <div v-for="index in setCount" :key="index" class="StretchFB">
             <div class="Stretch"></div>
             <div class="FB">
                 <div class="icon-wrapper">
@@ -30,8 +30,14 @@ export default {
     components: {
         ThumbUpOutline,
         ThumbDownOutline
-    }
+    },
+    data() {
+    return {
+      setCount: 5, // 表示するセット数を指定
+    };
+  },
 }
+
 
 
 </script>
@@ -48,11 +54,14 @@ export default {
   background-image: url("./pattern-image.png");
   background-repeat: no-repeat;
   background-size: cover;
+
+  text-align: center;
 }
 
 .comment1{
     text-align: center;
-    margin-top: 120px;
+    margin-top: 110px;
+    margin-bottom: 80px;
     color: #382823;
     font-weight:bold;
     font-size: 20px;
@@ -64,13 +73,12 @@ export default {
 	height: 160px;
 	border-radius: 50%;
     background: #E5F3E7;
-    margin-top: 90px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 6px;
+    margin-right: 6px;
 }
 
 .StretchFB{
-    text-align: center;
+    display: inline-block;
 }
 
 .FB {
@@ -85,14 +93,20 @@ export default {
 }
 
 .comment2{
-    text-align: center;
-    margin-top: 150px;
+    position: fixed;
+    bottom: 100px; /* 画面下からの距離を指定 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平方向に中央揃え */
     color: #382823;
     font-weight:bold;
     font-size: 20px;
 }
 
 .backbutton{
+    position: fixed;
+    bottom: 45px; /* 画面下からの距離を指定 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平方向に中央揃え */
     width: 120px;
     height: 40px;
     border-radius: 20px;
