@@ -17,7 +17,9 @@
     "core-js": "^3.8.3",
     "electron-router": "^0.5.1",
     "vue": "^3.2.13",
-    "vue-router": "^4.2.2"
+    "vue-material-design-icons": "^5.2.0",
+    "vue-router": "^4.2.4",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

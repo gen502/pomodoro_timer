@@ -7,57 +7,56 @@
                     <h1>設定</h1>
                 </div>    
                 <hr>
-                <form>
-                    <div style="margin-right: 375px;">タイマー設定</div>
-                    <label for="work-time">作業時間:</label>
-                    <select id="work-time" name="work-time" required>
-                        <option value="" disabled selected>作業時間を選択</option>
-                        <option value="work_15min">15分</option>
-                        <option value="work_25min">25分</option>
-                        <option value="work_35min">35分</option>
-                        <option value="work_45min">45分</option>
-                        <option value="work_55min">55分</option>
-                        <option value="work_60min">60分</option>
-                    </select><br>
+                <div style="margin-right: 375px;">タイマー設定</div>
+                <label for="work-time">作業時間:</label>
+                <!-- 作業時間の設定 -->
+                <select id="work-time" name="work-time" required>
+                    <option value="" disabled selected>作業時間を選択</option>
+                    <option value="15">15分</option>
+                    <option value="25">25分</option>
+                    <option value="35">35分</option>
+                    <option value="45">45分</option>
+                    <option value="55">55分</option>
+                    <option value="60">60分</option>
+                </select>
 
-                    <label for="break-time">休憩時間:</label>
-                    <select id="break-time" name="break-time" required>
-                        <option value="" disabled selected>休憩時間を選択</option>
-                        <option value="break_5min">5分</option>
-                        <option value="break_10min">10分</option>
-                        <option value="break_15min">15分</option>
-                        <option value="break_25min">25分</option>
-                        <option value="break_30min">30分</option>
-                    </select><br>
+                <!-- 休憩時間の設定 -->
+                <select id="break-time" name="break-time" required>
+                    <option value="" disabled selected>休憩時間を選択</option>
+                    <option value="5">5分</option>
+                    <option value="10">10分</option>
+                    <option value="15">15分</option>
+                    <option value="25">25分</option>
+                    <option value="30">30分</option>
+                </select>
 
-                    <label for="set-count">セット数:</label>
-                    <select id="set-count" name="set-count" required>
-                        <option value="" disabled selected>セット数を選択</option>
-                        <option value="set_1">1</option>
-                        <option value="set_2">2</option>
-                        <option value="set_3">3</option>
-                        <option value="set_4">4</option>
-                        <option value="set_5">5</option>
-                        <option value="set_6">6</option>
-                        <option value="set_7">7</option>
-                        <option value="set_8">8</option>
-                        <option value="set_9">9</option>
-                        <option value="set_10">10</option>
-                    </select><br>
+                <!-- セット数の設定 -->
+                <select id="set-count" name="set-count" required>
+                    <option value="" disabled selected>セット数を選択</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select><br>
 
-                    <div style="margin-right: 400px;">体の悩み</div>
-                    <div class="options">
-                        <p class="option" id="首こり">首こり</p>
-                        <p class="option" id="肩こり">肩こり</p>
-                        <p class="option" id="背中痛">背中痛</p>
-                        <p class="option" id="猫背">猫背</p>
-                        <p class="option" id="手首">手首</p>
-                    </div><br>
+                <div style="margin-right: 400px;">体の悩み</div>
+                <div class="options">
+                    <p class="option" :class="{ selected: selected === '首こり' }" id="首こり" @click="selectOption('首こり')">首こり</p>
+                    <p class="option" :class="{ selected: selected === '肩こり' }" id="肩こり" @click="selectOption('肩こり')">肩こり</p>
+                    <p class="option" :class="{ selected: selected === '背中痛' }" id="背中痛" @click="selectOption('背中痛')">背中痛</p>
+                    <p class="option" :class="{ selected: selected === '猫背' }" id="猫背" @click="selectOption('猫背')">猫背</p>
+                    <p class="option" :class="{ selected: selected === '手首' }" id="手首" @click="selectOption('手首')">手首</p>
+                </div><br>
 
-                    <div class="save-button">
-                        <input type="submit" value="Save">
-                    </div>
-                </form>
+                <div class="save-button">
+                    <input type="submit" value="Save">
+                </div>
             </div>
         </div>
     </form>    
@@ -70,17 +69,21 @@ import { mapMutations } from 'vuex';
 export default {
     name: 'SettingVue',
     methods: {
+        selectOption(id) {
+            this.selected = id;
+        },
         ...mapMutations(['setWorkTime', 'setBreakTime', 'setSetCount']),
         saveSettings() {
             const workTimeSelect = document.getElementById('work-time');
             const breakTimeSelect = document.getElementById('break-time');
             const setCountSelect = document.getElementById('set-count');
-            const workTime = workTimeSelect.options[workTimeSelect.selectedIndex].value;
-            const breakTime = breakTimeSelect.options[breakTimeSelect.selectedIndex].value;
-            const setCount = setCountSelect.options[setCountSelect.selectedIndex].value;
+            const workTime = parseInt(workTimeSelect.options[workTimeSelect.selectedIndex].value);
+            const breakTime = parseInt(breakTimeSelect.options[breakTimeSelect.selectedIndex].value);
+            const setCount = parseInt(setCountSelect.options[setCountSelect.selectedIndex].value);
             this.setWorkTime(workTime);
             this.setBreakTime(breakTime);
             this.setSetCount(setCount);
+            this.$router.push('/firsttimer');
         }
     },
     components: {
