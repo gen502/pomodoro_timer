@@ -49,7 +49,7 @@ import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 export default {
     data() {
         return {
-            remainingTime: 5 * 60, // 初期値として5分を秒単位で設定
+            remainingTime: 1 * 60, // 初期値として5分を秒単位で設定
             progressRatio: 100, // ゲージの初期値を100%として設定
             circleSize: 300, // ゲージのサイズ
             circleRadius: 140, // ゲージの半径
@@ -72,6 +72,11 @@ export default {
     },
     mounted() {
         this.startTimer();
+            setTimeout(() => {
+                if (this.remainingTime <= 0) {
+                this.$emit('timerFinished'); // タイマーが終了したことを示すイベントを発火
+            }    
+         },this.remainingTime * 1000); // 残り時間（秒）後にイベントを発火
     },
     methods: {
         toggleMinimize() {
@@ -93,7 +98,7 @@ export default {
         },
         resetTimer() {
             this.stopTimer();
-            this.remainingTime = 5 * 60;
+            this.remainingTime = 1 * 60;
             this.progressRatio = 100;
             this.timerRunning = true;
             this.startTimer();
@@ -101,7 +106,7 @@ export default {
         updateRemainingTime() {
             if (this.remainingTime > 0) {
                 this.remainingTime--; // 残り時間を1秒減らす
-                this.progressRatio = (this.remainingTime / (5 * 60)) * 100; // 残り時間の割合を計算
+                this.progressRatio = (this.remainingTime / (1 * 60)) * 100; // 残り時間の割合を計算
             } else {
                 this.stopTimer();
             }
