@@ -12,10 +12,18 @@
       <div class="myavatar"></div>
 
       <div class="settingbutton">
-        <div class="stop"></div>
-        <div class="restart"></div>
-        <div class="setting"></div>
-        <div class="minimaize"></div>
+        <div class="stop" @click="toggleTimer" style="color: white;">
+          <component :is="timerRunning ? 'PauseIcon' : 'PlayIcon'" style="margin-right: 1px; margin-top: 3px;"/>
+        </div>
+        <div class="restart" @click="resetTimer" style="color: white;">
+          <ResetIcon :size="24" style="margin-right: 3px; margin-top: 3px;" />
+        </div>
+        <div class="setting" style="color: white;">
+          <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
+        </div>
+        <div class="minimaize" style="color: white; ">
+          <WatermarkIcon :size="17" style="margin-right: 1px; margin-top: 3px;"/>
+        </div>
 
       </div>
     
@@ -23,17 +31,52 @@
 </template>
 
 <script>
+import PauseIcon from "vue-material-design-icons/Pause.vue";
+import PlayIcon from "vue-material-design-icons/Play.vue";
+import ResetIcon from "vue-material-design-icons/Restore.vue";
+import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
+import CogIcon from "vue-material-design-icons/Cog.vue";
+
 export default {
   data() {
     return {
       remainingTime: 5 * 60, // 初期値として5分を秒単位で設定
       progressRatio: 100, // ゲージの初期値を100%として設定
+      timerRunning: true, // タイマーが実行中かどうかのフラグ
     };
   },
   mounted() {
-    setInterval(this.updateRemainingTime, 1000); // 1秒ごとに残り時間を更新
+    this.startTimer();
   },
+  components: {
+        PauseIcon,
+        PlayIcon,
+        ResetIcon,
+        WatermarkIcon,
+        CogIcon,
+    },
   methods: {
+    startTimer() {
+        this.timer = setInterval(this.updateRemainingTime, 1000); // 1秒ごとに残り時間を更新
+      },
+    stopTimer() {
+         clearInterval(this.timer);
+      },
+    toggleTimer() {
+          if (this.timerRunning) {
+              this.stopTimer();
+          } else {
+              this.startTimer();
+          }
+          this.timerRunning = !this.timerRunning;
+      },
+    resetTimer() {
+          this.stopTimer();
+          this.remainingTime = 5 * 60;
+          this.progressRatio = 100;
+          this.timerRunning = true;
+          this.startTimer();
+      },
     updateRemainingTime() {
       if (this.remainingTime > 0) {
         this.remainingTime--; // 残り時間を1秒減らす
@@ -114,6 +157,9 @@ export default {
   border-radius: 50%;
   background:#4FA095;
   margin: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
 
 }
@@ -124,6 +170,9 @@ export default {
   border-radius: 50%;
   background:#4FA095;
   margin: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
 
 }
@@ -134,6 +183,9 @@ export default {
   border-radius: 50%;
   background:#92A09E;
   margin: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
 }
 
@@ -143,7 +195,20 @@ export default {
   border-radius: 50%;
   background:#92A09E;
   margin: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+}
+
+.stop:hover,
+.restart:hover{
+    background-color: #58bfa7;
+}
+
+.setting:hover,
+.minimaize:hover{
+  background-color: #ADB9B7;
 }
 
 </style>
