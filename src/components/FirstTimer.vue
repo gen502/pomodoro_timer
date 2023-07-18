@@ -45,6 +45,7 @@ import PauseIcon from "vue-material-design-icons/Pause.vue";
 import PlayIcon from "vue-material-design-icons/Play.vue";
 import ResetIcon from "vue-material-design-icons/Restore.vue";
 import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
+import { mapState } from 'vuex';
 
 export default {
     data() {
@@ -60,6 +61,7 @@ export default {
         };
     },
     computed: {
+        ...mapState(['workTime', 'breakTime', 'setCount']),
         progressOffset() {
             return (1 - this.progressRatio / 100) * this.getCircumference();
         },
@@ -71,6 +73,7 @@ export default {
         WatermarkIcon,
     },
     mounted() {
+        this.remainingTime = this.workTime * 60;
         this.startTimer();
     },
     methods: {
@@ -93,7 +96,7 @@ export default {
         },
         resetTimer() {
             this.stopTimer();
-            this.remainingTime = 5 * 60;
+            this.remainingTime = this.workTime * 60;
             this.progressRatio = 100;
             this.timerRunning = true;
             this.startTimer();
@@ -101,7 +104,7 @@ export default {
         updateRemainingTime() {
             if (this.remainingTime > 0) {
                 this.remainingTime--; // 残り時間を1秒減らす
-                this.progressRatio = (this.remainingTime / (5 * 60)) * 100; // 残り時間の割合を計算
+                this.progressRatio = (this.remainingTime / (this.workTime * 60)) * 100; // 残り時間の割合を計算
             } else {
                 this.stopTimer();
             }
