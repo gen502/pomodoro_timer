@@ -215,7 +215,7 @@ select {
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .save-button input[type="submit"]:hover {
