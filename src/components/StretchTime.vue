@@ -31,11 +31,13 @@
 </template>
 
 <script>
+// import { mapMutations } from 'vuex';
 import PauseIcon from "vue-material-design-icons/Pause.vue";
 import PlayIcon from "vue-material-design-icons/Play.vue";
 import ResetIcon from "vue-material-design-icons/Restore.vue";
 import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 import CogIcon from "vue-material-design-icons/Cog.vue";
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   data() {
@@ -45,7 +47,11 @@ export default {
       timerRunning: true, // タイマーが実行中かどうかのフラグ
     };
   },
+  computed: {
+        ...mapState(['workTime', 'breakTime', 'setCount']),
+    },
   mounted() {
+    this.remainingTime = this.breakTime * 10;
     this.startTimer();
   },
   components: {
@@ -56,6 +62,7 @@ export default {
         CogIcon,
     },
   methods: {
+    ...mapMutations(['decreaseSetCount']),
     startTimer() {
         this.timer = setInterval(this.updateRemainingTime, 1000); // 1秒ごとに残り時間を更新
       },
@@ -72,7 +79,7 @@ export default {
       },
     resetTimer() {
           this.stopTimer();
-          this.remainingTime = 5 * 60;
+          this.remainingTime = this.breakTime * 60;
           this.progressRatio = 100;
           this.timerRunning = true;
           this.startTimer();
@@ -80,7 +87,16 @@ export default {
     updateRemainingTime() {
       if (this.remainingTime > 0) {
         this.remainingTime--; // 残り時間を1秒減らす
-        this.progressRatio = (this.remainingTime / (5 * 60)) * 100; // 残り時間の割合を計算
+        this.progressRatio = (this.remainingTime / (this.breakTime * 10)) * 100; // 残り時間の割合を計算
+      } else {
+        this.stopTimer();
+        if (this.setCount > 1) {
+            // セットカウントを1減らす
+            this.decreaseSetCount();
+            this.$router.push('/firsttimer'); 
+        } else {
+            this.$router.push('/feedback');
+        }
       }
     },
     formatTime(time) {

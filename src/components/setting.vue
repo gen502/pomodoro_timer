@@ -12,7 +12,7 @@
                 <!-- 作業時間の設定 -->
                 <select id="work-time" name="work-time" required>
                     <option value="" disabled selected>作業時間を選択</option>
-                    <option value="15">15分</option>
+                    <option value="1">1分</option>
                     <option value="25">25分</option>
                     <option value="35">35分</option>
                     <option value="45">45分</option>
@@ -23,7 +23,7 @@
                 <!-- 休憩時間の設定 -->
                 <select id="break-time" name="break-time" required>
                     <option value="" disabled selected>休憩時間を選択</option>
-                    <option value="5">5分</option>
+                    <option value="1">1分</option>
                     <option value="10">10分</option>
                     <option value="15">15分</option>
                     <option value="25">25分</option>

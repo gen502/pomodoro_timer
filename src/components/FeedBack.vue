@@ -23,7 +23,7 @@
       </div>
       <div class="comment2">フィードバックありがとうございます！お疲れ様でした！</div>
       <div class="backbutton">
-        <div class="backtext">戻る</div>
+        <div class="backtext" @click="goToSetting">戻る</div>
       </div>
     </div>
   </template>
@@ -59,6 +59,9 @@
         } else {
           console.log(0);
         }
+      },
+      goToSetting() {
+        this.$router.push('/setting');
       },
     },
   };

@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Setting from './components/setting.vue'
 import FirstTimer from './components/FirstTimer.vue'
+import StretchTime from './components/StretchTime.vue'
+import FeedBack from './components/FeedBack.vue'
 
 const routes = [
     {
@@ -9,11 +11,20 @@ const routes = [
     },
     {
         path: '/setting',
-        component: Setting
+        component: Setting,
+        props: true
     },
     {
         path: '/firsttimer',
         component: FirstTimer
+    },
+    {
+        path: '/stretch',
+        component: StretchTime
+    },
+    {
+        path: '/feedback',
+        component: FeedBack
     }
 ]
 

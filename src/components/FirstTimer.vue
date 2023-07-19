@@ -46,6 +46,7 @@ import PlayIcon from "vue-material-design-icons/Play.vue";
 import ResetIcon from "vue-material-design-icons/Restore.vue";
 import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 import { mapState } from 'vuex';
+// import { useRouter } from 'vue-router'
 
 export default {
     data() {
@@ -73,7 +74,7 @@ export default {
         WatermarkIcon,
     },
     mounted() {
-        this.remainingTime = this.workTime * 60;
+        this.remainingTime = this.workTime * 10;
         this.startTimer();
     },
     methods: {
@@ -104,9 +105,10 @@ export default {
         updateRemainingTime() {
             if (this.remainingTime > 0) {
                 this.remainingTime--; // 残り時間を1秒減らす
-                this.progressRatio = (this.remainingTime / (this.workTime * 60)) * 100; // 残り時間の割合を計算
+                this.progressRatio = (this.remainingTime / (this.workTime * 10)) * 100; // 残り時間の割合を計算
             } else {
                 this.stopTimer();
+                this.$router.push('/stretch');
             }
         },
         formatTime(time) {

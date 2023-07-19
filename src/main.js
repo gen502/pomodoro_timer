@@ -20,6 +20,9 @@ const store = createStore({
         setSetCount(state, value) {
             state.setCount = value;
         },
+        decreaseSetCount(state) {
+            state.setCount--;
+          }
     },
 })
 
