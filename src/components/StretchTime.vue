@@ -161,10 +161,11 @@ export default {
 }
 
 .settingbutton{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
   display: flex;
   justify-content: flex-end;
-  margin-top: 140px;
-  margin-right: 15px;
 }
 
 .stop{
