@@ -79,7 +79,7 @@ export default {
       },
     resetTimer() {
           this.stopTimer();
-          this.remainingTime = this.breakTime * 60;
+          this.remainingTime = this.breakTime * 10;
           this.progressRatio = 100;
           this.timerRunning = true;
           this.startTimer();

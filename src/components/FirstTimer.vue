@@ -97,7 +97,7 @@ export default {
         },
         resetTimer() {
             this.stopTimer();
-            this.remainingTime = this.workTime * 60;
+            this.remainingTime = this.workTime * 10;
             this.progressRatio = 100;
             this.timerRunning = true;
             this.startTimer();
