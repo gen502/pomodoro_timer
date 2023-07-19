@@ -30,10 +30,13 @@
             {{ formatTime(remainingTime) }}
         </div>
 
-        <!-- 最小化ボタン -->
-        <div class="minimize-button-container">
+        <div class="settingcontainer">
+            <div class="setting" style="color: white;">
+                <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
+            </div>
+            <!-- 最小化ボタン -->
             <button class="minimize-button" @click="toggleMinimize" style="color: white;">
-                <WatermarkIcon :size="14" />
+                <WatermarkIcon :size="18" style="margin-right: 1px; margin-top: 2px;"/>
             </button>
         </div>
     </div>
@@ -45,6 +48,7 @@ import PauseIcon from "vue-material-design-icons/Pause.vue";
 import PlayIcon from "vue-material-design-icons/Play.vue";
 import ResetIcon from "vue-material-design-icons/Restore.vue";
 import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
+import CogIcon from "vue-material-design-icons/Cog.vue";
 import { mapState } from 'vuex';
 // import { useRouter } from 'vue-router'
 
@@ -72,6 +76,7 @@ export default {
         PlayIcon,
         ResetIcon,
         WatermarkIcon,
+        CogIcon
     },
     mounted() {
         this.remainingTime = this.workTime * 10;
@@ -186,15 +191,19 @@ export default {
     background-color: #58bfa7;
 }
 
-.minimize-button {
+.settingcontainer{
+    display: flex;
     position: fixed;
     right: 20px;
     bottom: 20px;
-    width: 60px;
-    height: 60px;
+}
+.minimize-button {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-color: #92A09E;
     border: none;
+    margin: 7px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -214,5 +223,17 @@ export default {
     padding: 5px 10px;
     font-size: 24px;
     font-weight: bold;
+}
+
+.setting{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background:#92A09E;
+  margin: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 </style>

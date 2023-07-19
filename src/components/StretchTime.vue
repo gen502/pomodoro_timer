@@ -21,9 +21,9 @@
         <div class="setting" style="color: white;">
           <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
         </div>
-        <div class="minimaize" style="color: white; ">
-          <WatermarkIcon :size="17" style="margin-right: 1px; margin-top: 3px;"/>
-        </div>
+        <button class="minimize-button" @click="toggleMinimize" style="color: white;">
+                <WatermarkIcon :size="18" style="margin-right: 1px; margin-top: 2px;"/>
+        </button>
 
       </div>
     
@@ -206,16 +206,17 @@ export default {
   cursor: pointer;
 }
 
-.minimaize{
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background:#92A09E;
-  margin: 7px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+.minimize-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #92A09E;
+    border: none;
+    margin: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 .stop:hover,

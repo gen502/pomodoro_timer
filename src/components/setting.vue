@@ -12,7 +12,7 @@
                     <!-- 作業時間の設定 -->
                     <div class="settingwork" style="margin-top: 5px;">
                         <label for="work-time" style="font-size: 16px;">作業時間:</label>
-                        <select id="work-time" name="work-time" style="font-size: 16px;" required>
+                        <select id="work-time" name="work-time" style="font-size: 16px; cursor: pointer;" required >
                             <option value="" disabled selected>作業時間を選択</option>
                             <option value="1">1分</option>
                             <option value="25">25分</option>
@@ -26,7 +26,7 @@
                     <!-- 休憩時間の設定 -->
                     <div class="settingbreak">
                         <label for="break-time" style="font-size: 16px;">休憩時間:</label>
-                        <select id="break-time" name="break-time"  style="font-size: 16px;" required>
+                        <select id="break-time" name="break-time"  style="font-size: 16px; cursor: pointer;" required>
                             <option value="" disabled selected>休憩時間を選択</option>
                             <option value="1">1分</option>
                             <option value="10">10分</option>
@@ -39,7 +39,7 @@
                     <!-- セット数の設定 -->
                     <div class="settingset">
                         <label for="set-count" style="font-size: 16px;">セット数:</label>
-                        <select id="set-count" name="set-count" style="font-size: 16px;" required>
+                        <select id="set-count" name="set-count" style="font-size: 16px; cursor: pointer;" required>
                             <option value="" disabled selected>セット数を選択</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
