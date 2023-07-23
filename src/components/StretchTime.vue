@@ -8,8 +8,12 @@
 
       <!-- タイマーの表示 -->
       <div class="formatTime">{{ formatTime(remainingTime) }}</div>
-    
-      <div class="myavatar"></div>
+      
+      <div class="avatars">
+            <div class="myavatar"></div>
+            <!-- 動画をオーバーレイで載せる -->
+            <video width="500" height="300" src="/test1.mp4" autoplay muted playsinline style="margin-left: 50px; margin-top: 80px;"></video>
+      </div>  
 
       <div class="settingbutton">
         <div class="stop" @click="toggleTimer" style="color: white;">
@@ -38,19 +42,25 @@ import ResetIcon from "vue-material-design-icons/Restore.vue";
 import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 import CogIcon from "vue-material-design-icons/Cog.vue";
 import { mapState, mapMutations } from 'vuex';
+// import videojs from 'video.js';
+// import 'video.js/dist/video-js.css'; // video.jsのCSSファイルをインポート
+
 
 export default {
   data() {
     return {
+      selected: null,
       remainingTime: 5 * 60, // 初期値として5分を秒単位で設定
       progressRatio: 100, // ゲージの初期値を100%として設定
       timerRunning: true, // タイマーが実行中かどうかのフラグ
+      showComponent: true, // v-ifディレクティブの条件に基づいてコンポーネントを再生成するフラグ
     };
   },
   computed: {
         ...mapState(['workTime', 'breakTime', 'setCount']),
     },
   mounted() {
+    // this.initVideoPlayer();
     this.remainingTime = this.breakTime * 10;
     this.startTimer();
   },
@@ -104,6 +114,14 @@ export default {
       const seconds = time % 60; // 秒単位の時間を計算
       return `${minutes}:${seconds.toString().padStart(2, '0')}`; // MM:SS 形式で表示する
     },
+    // initVideoPlayer() {
+    //     const options = {
+    //         autoplay: true,
+    //     };
+    //     this.player = videojs('my-video', options, function onPlayerReady() {
+    //     // プレーヤーが初期化された時に実行する処理（必要に応じて）
+    //   });
+    // },      
   },
 };
 
@@ -227,6 +245,10 @@ export default {
 .setting:hover,
 .minimaize:hover{
   background-color: #ADB9B7;
+}
+
+.avatars{
+    display: flex;
 }
 
 </style>

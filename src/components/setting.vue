@@ -100,6 +100,15 @@ export default {
             this.$router.push('/firsttimer');
         }
     },
+    mounted() {
+        const options = document.querySelectorAll('.option');
+
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                option.classList.toggle('selected');
+            });
+        });
+    },
     components: {
         CogIcon,
     },
@@ -184,7 +193,7 @@ select {
 }
 
 .option.selected {
-    background-color: green;
+    background-color: #999;
     color: #fff;
 }
 
