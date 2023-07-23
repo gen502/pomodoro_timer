@@ -10,9 +10,12 @@
       <div class="formatTime">{{ formatTime(remainingTime) }}</div>
       
       <div class="avatars">
-            <div class="myavatar"></div>
+            <div class="myavatar"><iframe src="http://localhost:1234" width="100%" height="100%" frameborder=0></iframe></div>
             <!-- 動画をオーバーレイで載せる -->
-            <video width="500" height="300" src="/test1.mp4" autoplay muted playsinline style="margin-left: 50px; margin-top: 80px;"></video>
+            
+              <video width="500" height="800" src="/shoulder.mov" autoplay muted playsinline style="margin-left: -4%;"></video>
+            
+            
       </div>  
 
       <div class="settingbutton">
@@ -168,14 +171,28 @@ export default {
 
 .myavatar{
     /* text-align: center; */
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    background: #ffffff;
-    margin-top: 170px;
-    margin-left: 300px;
+    width: 45%;
+    height: auto;
+    /* border-radius: 50%; */
+    /* background: #ffffff; */
+    /* margin-top: 170px; */
+    margin-left: 10%;
+    transform: scale(-1, 1);  /*左右反転*/
+    /* overflow: hidden; */
     /* margin-right: auto; */
     /* box-shadow: 0px 0px 20px 2px #4FA095 */
+}
+
+video{
+  clip-path:circle(40% at 50% 50%);
+}
+
+.trainer{
+  width: 50%;
+  margin-left: -25%;
+  /* height: 50%; */
+  /* border-radius: 50%;
+  overflow: hidden; */
 }
 
 .settingbutton{
@@ -249,6 +266,7 @@ export default {
 
 .avatars{
     display: flex;
+    filter: drop-shadow(0px 0px rgba(0,0,0,0));
 }
 
 </style>
