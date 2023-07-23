@@ -81,6 +81,23 @@ import CogIcon from "vue-material-design-icons/Cog.vue";
 import { mapMutations } from 'vuex';
 import axios from 'axios';
 
+var webSocket; //ウェブソケット
+
+
+    // サーバにメッセージを送信する関数
+    function sendMessage(message){
+      //var message = document.getElementById("textMessage");
+      //console.log(message.value);
+      //var message = {"id": 12, "name":"gen"};
+      //messageTextArea.value += "Send => "+message.value+"\n";
+      //webSocket.send(message.value);
+      console.dir(message);
+      webSocket.send(JSON.stringify(message));
+      //message.value = "";
+    }
+
+   
+
 export default {
     name: 'SettingVue',
     data() {
@@ -125,6 +142,40 @@ export default {
                 set_count: setCount,
                 },
             };
+            var msg = {
+                'option' : 'setting', 
+                'concerns': concernsArray,
+                'work_time': workTime,
+                'break_time': breakTime,
+                'set_count': setCount,
+            }
+            webSocket = new WebSocket("ws://localhost:8001"); // インスタンスを作り、サーバと接続
+
+            // ソケット接続すれば呼び出す関数を設定
+            webSocket.onopen = function(message){
+                //messageTextArea.value += "Server connect... OK\n";
+                console.log(message);
+                sendMessage(msg);
+            };
+
+            // ソケット接続が切ると呼び出す関数を設定
+            webSocket.onclose = function(message){
+                //messageTextArea.value += "Server Disconnect... OK\n";
+                console.log(message);
+            };
+
+            // ソケット通信中でエラーが発生すれば呼び出す関数を設定
+            webSocket.onerror = function(message){
+                console.log(message);
+                //messageTextArea.value += "error...\n";
+            };
+
+            // ソケットサーバからメッセージが受信すれば呼び出す関数を設定
+            webSocket.onmessage = function(message){
+                console.log(message);
+                //messageTextArea.value += "Receive => "+message.data+"\n";
+            };
+            
 
             try {
             // axiosを使ってAPIエンドポイントにPOSTリクエストを送信

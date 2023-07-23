@@ -13,7 +13,7 @@
             <div class="myavatar"><iframe src="http://localhost:1234" width="100%" height="100%" frameborder=0></iframe></div>
             <!-- 動画をオーバーレイで載せる -->
             
-              <video width="500" height="800" src="/shoulder.mov" autoplay muted playsinline style="margin-left: -4%;"></video>
+              <video width="500" height="800" src="/shoulder.mov" autoplay muted playsinline style="margin-left: -4%;" id="trainervideo"></video>
             
             
       </div>  
@@ -48,6 +48,18 @@ import { mapState, mapMutations } from 'vuex';
 // import videojs from 'video.js';
 // import 'video.js/dist/video-js.css'; // video.jsのCSSファイルをインポート
 
+var webSocket; //ウェブソケット
+
+// サーバにメッセージを送信する関数
+function sendMessage(message){
+  console.dir(message);
+  webSocket.send(JSON.stringify(message));
+}
+
+var msg = {
+        'option' : 'stretch',
+    }
+
 
 export default {
   data() {
@@ -64,6 +76,35 @@ export default {
     },
   mounted() {
     // this.initVideoPlayer();
+    webSocket = new WebSocket("ws://localhost:8001"); // インスタンスを作り、サーバと接続
+    // ソケット接続すれば呼び出す関数を設定
+    webSocket.onopen = function(message){
+        //messageTextArea.value += "Server connect... OK\n";
+        console.log(message);
+        sendMessage(msg);
+        
+    };
+
+    // ソケット接続が切ると呼び出す関数を設定
+    webSocket.onclose = function(message){
+        //messageTextArea.value += "Server Disconnect... OK\n";
+        console.log(message);
+    };
+
+    // ソケット通信中でエラーが発生すれば呼び出す関数を設定
+    webSocket.onerror = function(message){
+        console.log(message);
+        //messageTextArea.value += "error...\n";
+    };
+
+    // ソケットサーバからメッセージが受信すれば呼び出す関数を設定
+    webSocket.onmessage = function(message){
+        console.log(message.data);
+        const imgElement = document.getElementById('trainervideo');
+        imgElement.src = message.data;
+        webSocket.close();
+        //messageTextArea.value += "Receive => "+message.data+"\n";
+    };
     this.remainingTime = this.breakTime * 10;
     this.startTimer();
   },
