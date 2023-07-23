@@ -57,14 +57,14 @@
                     <div class="subtitle" style="color: #5B5B5B;">体の悩み</div>
                     <div class="options">
                         <div class="optionsnarabi" style="margin-top: -15px;">
-                            <p class="option" :class="{ selected: selected === '首こり' }" id="首こり" @click="selectOption('首こり')">首こり</p>
-                            <p class="option" :class="{ selected: selected === '肩こり' }" id="肩こり" @click="selectOption('肩こり')">肩こり</p>
-                            <p class="option" :class="{ selected: selected === '背中痛' }" id="背中痛" @click="selectOption('背中痛')">背中痛</p>
+                            <p class="option" :class="{ selected: concerns.首こり }" @click="toggleConcern('首こり')">首こり</p>
+                            <p class="option" :class="{ selected: concerns.肩こり }" @click="toggleConcern('肩こり')">肩こり</p>
+                            <p class="option" :class="{ selected: concerns.背中痛 }" @click="toggleConcern('背中痛')">背中痛</p>
                         </div>
                         <div class="optionsnarabi2">    
-                            <p class="option" :class="{ selected: selected === '猫背' }" id="猫背" @click="selectOption('猫背')">猫背</p>
-                            <p class="option" :class="{ selected: selected === '手首' }" id="手首" @click="selectOption('手首')">手首</p>
-                        </div>    
+                            <p class="option" :class="{ selected: concerns.猫背 }" @click="toggleConcern('猫背')">猫背</p>
+                            <p class="option" :class="{ selected: concerns.手首 }" @click="toggleConcern('手首')">手首</p>
+                        </div>   
                         </div><br>
                 </div>    
 
@@ -82,12 +82,29 @@ import { mapMutations } from 'vuex';
 
 export default {
     name: 'SettingVue',
+    data() {
+        return {
+            concerns: {
+                '首こり': false,
+                '肩こり': false,
+                '背中痛': false,
+                '猫背': false,
+                '手首': false
+            }
+        };
+    },
     methods: {
         selectOption(id) {
             this.selected = id;
         },
+        toggleConcern(id) {
+            this.concerns[id] = !this.concerns[id];
+            console.log(this.concerns);
+        },
         ...mapMutations(['setWorkTime', 'setBreakTime', 'setSetCount']),
         saveSettings() {
+            const concernsArray = Object.keys(this.concerns).map(key => this.concerns[key] ? 1 : 0);
+            console.log(concernsArray);
             const workTimeSelect = document.getElementById('work-time');
             const breakTimeSelect = document.getElementById('break-time');
             const setCountSelect = document.getElementById('set-count');
@@ -99,15 +116,6 @@ export default {
             this.setSetCount(setCount);
             this.$router.push('/firsttimer');
         }
-    },
-    mounted() {
-        const options = document.querySelectorAll('.option');
-
-        options.forEach(option => {
-            option.addEventListener('click', () => {
-                option.classList.toggle('selected');
-            });
-        });
     },
     components: {
         CogIcon,
