@@ -22,8 +22,8 @@
         <div class="restart" @click="resetTimer" style="color: white;">
           <ResetIcon :size="24" style="margin-right: 3px; margin-top: 3px;" />
         </div>
-        <div class="setting" style="color: white;">
-          <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
+        <div class="setting" style="color: white;" @click="navigateToSettings">
+            <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
         </div>
         <button class="minimize-button" @click="toggleMinimize" style="color: white;">
                 <WatermarkIcon :size="18" style="margin-right: 1px; margin-top: 2px;"/>
@@ -42,6 +42,7 @@ import ResetIcon from "vue-material-design-icons/Restore.vue";
 import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 import CogIcon from "vue-material-design-icons/Cog.vue";
 import { mapState, mapMutations } from 'vuex';
+// import { useRouter } from 'vue-router';
 // import videojs from 'video.js';
 // import 'video.js/dist/video-js.css'; // video.jsのCSSファイルをインポート
 
@@ -113,6 +114,9 @@ export default {
       const minutes = Math.floor(time / 60); // 分単位の時間を計算
       const seconds = time % 60; // 秒単位の時間を計算
       return `${minutes}:${seconds.toString().padStart(2, '0')}`; // MM:SS 形式で表示する
+    },
+    navigateToSettings() {
+      this.$router.push('/setting');
     },
     // initVideoPlayer() {
     //     const options = {

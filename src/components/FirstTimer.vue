@@ -31,7 +31,7 @@
         </div>
 
         <div class="settingcontainer">
-            <div class="setting" style="color: white;">
+            <div class="setting" style="color: white;" @click="navigateToSettings">
                 <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
             </div>
             <!-- 最小化ボタン -->
@@ -124,6 +124,9 @@ export default {
         getCircumference() {
             const radius = this.circleRadius;
             return 2 * Math.PI * radius;
+        },
+        navigateToSettings() {
+            this.$router.push('/setting');
         },
     },
 };
