@@ -1,6 +1,7 @@
 <template>
     <div class="FeedBack">
       <div class="comment1">今回のストレッチはどうでしたか？</div>
+      <!-- 行ったストレッチの情報を受け取る -->
       <div v-for="index in setCount" :key="index" class="StretchFB">
         <div class="Stretch"></div>
         <div class="FB">
