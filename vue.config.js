@@ -1,4 +1,14 @@
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service');
+
 module.exports = defineConfig({
-  transpileDependencies: true
-})
+  transpileDependencies: true,
+  configureWebpack: {
+    target: 'electron-renderer',
+    resolve: {
+      fallback: {
+        "fs": false,
+        "path": require.resolve("path-browserify")
+      }
+    }
+  }
+});

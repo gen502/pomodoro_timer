@@ -4,11 +4,46 @@ import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const { ipcMain } = require('electron');
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
+
+let isWindowMinimized = false; // ウィンドウが縮小されているかどうかのフラグ
+let originalSize = { width: 800, height: 600 }; // ウィンドウの元のサイズ
+let originalPosition = { x: 0, y: 0 }; // ウィンドウの元の位置
+
+ipcMain.handle('toggle-minimize', () => {
+  console.log("toggle-minimize called");
+  const win = BrowserWindow.getFocusedWindow();
+  if (win) {
+    if (!isWindowMinimized) {
+      console.log("Minimizing window");
+      // ウィンドウの元のサイズと位置を保存
+      originalSize = win.getSize();
+      originalPosition = win.getPosition();
+
+      // ウィンドウのサイズを変更
+      win.setSize(500, 500); // 30%のサイズに変更
+
+      // ウィンドウを右下に移動
+      const { screen } = require('electron');
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+      win.setPosition(width - 490, height - 490);
+
+      isWindowMinimized = true;
+    } else {
+      console.log("Restoring window");
+      // ウィンドウのサイズと位置を元に戻す
+      win.setSize(originalSize[0], originalSize[1]);
+      // win.setPosition(originalPosition[0], originalPosition[1]);
+
+      isWindowMinimized = false;
+    }
+  }
+});
 
 async function createWindow() {
   // Create the browser window.
@@ -16,11 +51,8 @@ async function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: true,
+      contextIsolation: false
     }
   })
 

@@ -2,7 +2,7 @@
 </head>
 
 <template>
-    <div class="Time">
+    <div class="Time" :class="{ 'minimized': isMinimized }">
         <!-- ゲージと時間の表示 -->
         <div class="circle-progress" v-if="!isMinimized">
             <svg xmlns="http://www.w3.org/2000/svg" class="progress-ring" :width="circleSize" :height="circleSize">
@@ -26,8 +26,27 @@
                 </button>
             </div>
         </div>
-        <div class="minimized-timer" style="color: white;" v-else>
-            {{ formatTime(remainingTime) }}
+        <div class="minimized-timer" v-else>
+            <svg xmlns="http://www.w3.org/2000/svg" class="progress-ring" :width="circleSize" :height="circleSize">
+                <circle class="progress-ring-circle" :stroke="progressColor" stroke-width="20" fill="transparent"
+                    :r="circleRadius" :cx="circleCenter" :cy="circleCenter"
+                    :style="{ strokeDasharray: getCircumference(), strokeDashoffset: progressOffset }"></circle>
+                <g :transform="`translate(${circleCenter}, ${circleCenter})`">
+                    <text class="progress-text" dominant-baseline="middle" text-anchor="middle"
+                        :style="{ fill: progressColor }">
+                        {{ formatTime(remainingTime) }}
+                    </text>
+                </g>
+            </svg>
+
+            <div class="button-container">
+                <button class="play-pause-button" @click="toggleTimer" style="color: white;">
+                    <component :is="timerRunning ? 'PauseIcon' : 'PlayIcon'" />
+                </button>
+                <button class="reset-button" @click="resetTimer" style="color: white;">
+                    <ResetIcon :size="25" />
+                </button>
+            </div>
         </div>
 
         <div class="settingcontainer">
@@ -83,8 +102,9 @@ export default {
         this.startTimer();
     },
     methods: {
-        toggleMinimize() {
-            this.isMinimized = !this.isMinimized;
+        async toggleMinimize() {
+            const { ipcRenderer } = require('electron');
+            await ipcRenderer.invoke('toggle-minimize');
         },
         startTimer() {
             this.timer = setInterval(this.updateRemainingTime, 1000); // 1秒ごとに残り時間を更新
@@ -219,14 +239,18 @@ export default {
 
 .minimized-timer {
     position: fixed;
-    right: 20px;
-    bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.6);
     border-radius: 12px;
     padding: 5px 10px;
-    font-size: 24px;
+    font-size: 50px;
     font-weight: bold;
+    width: 100vw; /* 幅を追加 */
+    height: 100vh; /* 高さを追加 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
+
 
 .setting{
   width: 40px;
