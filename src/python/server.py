@@ -75,7 +75,7 @@ async def handler(websocket):
             estimating = False #姿勢推定の取得終了
             print(estimatedlist)
             estimate = estimatedlist.index(max(estimatedlist)) #姿勢推定の集計結果
-            suggested = dec_stretch(concerns, estimate, suggested_list, set_count) #ストレッチの推薦
+            suggested = dec_stretch(concerns, estimate, suggested_list, set_count, stretch_weight) #ストレッチの推薦
             await websocket.send(video_list[suggested])
             suggested_list[suggested] += 1 
             feedback_push_list.append(img_list[suggested])
