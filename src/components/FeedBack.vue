@@ -3,7 +3,8 @@
       <div class="comment1">今回のストレッチはどうでしたか？</div>
       <!-- 行ったストレッチの情報を受け取る -->
       <div v-for="index in computedSetCount" :key="index" class="StretchFB">
-        <div class="Stretch"></div>
+        <!-- <div class="Stretch"></div> -->
+        <img src="/neko2.jpg" class = "Stretch" :id="'video' + index">
         <div class="FB">
           <div class="icon-wrapper">
             <ThumbUpOutline
@@ -33,6 +34,8 @@
   import ThumbUpOutline from "vue-material-design-icons/ThumbUpOutline.vue";
   import ThumbDownOutline from "vue-material-design-icons/ThumbDownOutline.vue";
   import { mapState } from 'vuex';
+  var feedbacklist = [];
+  var receive_data;
   
   var webSocket; //ウェブソケット
   function connect(msg){
@@ -57,6 +60,16 @@
       // ソケットサーバからメッセージが受信すれば呼び出す関数を設定
       webSocket.onmessage = function(message){
         console.log(message);
+        receive_data = message.data;
+        if( receive_data != "ok"){
+          const p_data = JSON.parse(receive_data); //json型のデータを取得
+          const st_list = p_data.stretches;
+          console.log(st_list[0]);
+          for(var i = 1; i <= st_list.length; i++){
+            var imgElement = document.getElementById("video" + i);
+            imgElement.src = st_list[i-1];
+          }
+        }
         webSocket.close();
       };
       
@@ -98,8 +111,10 @@
         }
         if (this.feedbackValues[index] === "thumbUp") {
           console.log(1);
+          feedbacklist[index-1] = 1;
         } else if (this.feedbackValues[index] === "thumbDown") {
           console.log(-1);
+          feedbacklist[index-1] = -1;
         } else {
           console.log(0);
         }
@@ -107,12 +122,19 @@
       goToSetting() {
         var msg = {
               'option' : 'feedback', //ここにfeedbackする情報を追加
+              'feedbacklist' : feedbacklist,
           }
+        console.log(feedbacklist);
         connect(msg);
           this.$router.push('/setting');
         },
       },
     mounted() {
+      feedbacklist = [];
+      for (  var i = 0;  i < this.firstSet;  i++  ) {
+        feedbacklist.push(0);
+      }
+      console.log(feedbacklist);
       var msg = {
             'option' : 'finish',
         }

@@ -17,7 +17,7 @@ def dec_stretch(concern, estimate, suggested_list, setcount):
         elif estimate == 2:
             return 4
 
-    if sum(suggested_list) > 6:
+    if sum(suggested_list) < 6:
         index = 0
         if(concern[0] == 1): #首
             while(index < 4):

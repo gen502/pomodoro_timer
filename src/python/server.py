@@ -25,9 +25,18 @@ video_list =  [
                 "/back1.mov",
                 "/neko.mov",
               ]
+img_list = [
+            "/neck1.jpg",
+            "/neck2.jpg",
+            "/neck3.jpg",
+            "/neck4.jpg",
+            "/shoulder.jpg",
+            "/back1.jpg",
+            "/neko.jpg",
+              ]
 feedback_push_list = []
+suggested_index_list = []
 feedback_pull_list = []
-suggest = [0,0]
 count = 0
 fin = False
 estimating = False
@@ -39,7 +48,7 @@ classifier.train('posture.csv')
 # この関数に通信しているときに行う処理を書く。
 # クライアントが接続している間は下の関数が常に回っている
 async def handler(websocket):
-    global concerns, worktime, breaktime, setcount, start, estimating, estimatedlist,feedback_push_list, feedback_pull_list
+    global concerns, worktime, breaktime, set_count, start, estimating, estimatedlist,feedback_push_list, feedback_pull_list, suggested_index_list
     # クライアントからのメッセージを取り出す
     async for message in websocket:
         print(message)
@@ -51,6 +60,9 @@ async def handler(websocket):
             work_time = data['work_time']
             break_time = data['break_time']
             set_count = data['set_count']
+            feedback_push_list = []
+            suggested_index_list = []
+            feedback_pull_list = []
             start = True
             await websocket.send("ok")
         elif option == 'timer_start':
@@ -62,18 +74,25 @@ async def handler(websocket):
             estimating = False
             print(estimatedlist)
             estimate = estimatedlist.index(max(estimatedlist))
-            suggested = dec_stretch(concern, estimate, suggested_list, setcount)
+            suggested = dec_stretch(concerns, estimate, suggested_list, set_count)
             await websocket.send(video_list[suggested])
             suggested_list[suggested] += 1
-            feedback_push_list.append(video_list[suggested])
+            feedback_push_list.append(img_list[suggested])
+            print(video_list[suggested])
+            suggested_index_list.append(suggested)
             estimatedlist = [0, 0, 0]
         elif option == 'finish':
             start = False
-            print("実施したストレッチを返す?")
-            await websocket.send(feedback_push_list)
+            print("実施したストレッチを返す")
+            feedback_data = {
+                "stretches" : feedback_push_list,
+            }
+            json_str = json.dumps(feedback_data)
+            print(json_str)
+            await websocket.send(json_str)
         elif option == 'feedback':
             print("フィードバックを受け取る")
-            #feedback_pull_list = data['feedbacklist']
+            feedback_pull_list = data['feedbacklist']
             await websocket.send("ok")
 
         
@@ -98,7 +117,7 @@ async def other_task():
 #     # ここに別の非同期処理を記述する
     udp = udprecv()     # クラス呼び出し
     while True:
-        udp.recv()          # 関数実行 
+        #udp.recv()          # 関数実行 
 #         print("別の処理を実行中...")
 #         if start:
 #             fin = True
