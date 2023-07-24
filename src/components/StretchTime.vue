@@ -12,16 +12,28 @@
           <div class="myavatar"></div>
           <video ref="video" width="500" height="300" :src="sampleURL" autoplay muted @ended="stopRecording" playsinline style="margin-left: 50px; margin-top: 80px;"></video>
         </div>
+        <div class="feedbackbtn" @click="process">
+          <div class="feedbacktext" >お手本と比べる</div>
+        </div>
       </div>
       <div v-else-if="buttonClicked">
         <div v-if="isLoading">
           Processing...
         </div>
         <div v-else>
-          <div class = "video-container">
-            <video ref="video1" width="500" height="300" :src="actURL_a" autoplay muted playsinline style="margin-left: 50px; margin-top: 80px;"></video>
-            <video ref="video2" width="500" height="300" :src="sampleURL_s" autoplay muted playsinline style="margin-left: 50px; margin-top: 80px;"></video>
+          <div class = "centered-video">
+            <div class="centered-video-container">
+              <div class="video-wrapper">
+                <video ref="video1" width="500" height="300" :src="actURL_a" autoplay muted playsinline ></video>
+              </div>
+              <div class="video-wrapper">  
+                <video ref="video2" width="500" height="300" :src="sampleURL_s" autoplay muted playsinline ></video>
+              </div>  
+            </div>  
             <img v-if="showImage" class="overlay-image" src="/img/test.jpeg" alt="Some image" />
+          </div>
+          <div class="more" @click="showImage = !showImage">
+            <div class="moretext">もっと詳しく</div>
           </div>
         </div>
       </div>
@@ -41,12 +53,12 @@
 
     </div>
 
-    <div>
-      <button @click="process">フィードバックを生成する！</button>
-    </div>
-    <div>
+    <!-- <div class="feedbackbtn" @click="process">
+      <div class="feedbacktext" >お手本と比べる</div>
+    </div> -->
+    <!-- <div>
       <button @click="showImage = !showImage">もっと詳しく</button>
-    </div>
+    </div> -->
 
 
   </div>
@@ -261,10 +273,11 @@ export default {
 }
 
 .settingbutton{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
   display: flex;
   justify-content: flex-end;
-  margin-top: 140px;
-  margin-right: 15px;
 }
 
 .stop{
@@ -328,10 +341,10 @@ export default {
 }
 
 
-.content {
+/* .content {
   display: flex;
   flex-direction: row;
-}
+} */
 
 @media (max-width: 600px) {
   .content {
@@ -353,6 +366,78 @@ export default {
   height: 100%;
   object-fit: cover;
   z-index: 10;
+}
+
+.feedbackbtn{
+  position: fixed;
+  bottom: 45px;
+  /* 画面下からの距離を指定 */
+  left: 50%;
+  transform: translateX(-50%);
+  /* 水平方向に中央揃え */
+  width: 200px;
+  height: 40px;
+  border-radius: 20px;
+  background: #4fa095;
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+  box-shadow: 0 0 5px #737373;
+}
+.feedbackbtn:hover {
+  background-color: #528C84;
+  box-shadow:0px 0px 8px #737373 
+}
+.feedbacktext{
+  font-weight: bold;
+  text-align: center;
+  padding-top: 7px;
+  color: #fffbec;
+}
+
+.more{
+  position: fixed;
+  bottom: 45px;
+  /* 画面下からの距離を指定 */
+  left: 50%;
+  transform: translateX(-50%);
+  /* 水平方向に中央揃え */
+  width: 200px;
+  height: 40px;
+  border-radius: 20px;
+  background: #4fa095;
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+  box-shadow: 0 0 5px #737373;
+}
+.more:hover {
+  background-color: #528C84;
+  box-shadow:0px 0px 8px #737373 
+}
+.moretext{
+  font-weight: bold;
+  text-align: center;
+  padding-top: 7px;
+  color: #fffbec;
+}
+
+.centered-video {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjust the height as needed */
+}
+
+.centered-video-container {
+  display: flex;
+  align-items: center; /* To center the videos horizontally */
+}
+
+.video-wrapper {
+  margin: 10px; /* Adjust the margin as needed */
 }
 
 

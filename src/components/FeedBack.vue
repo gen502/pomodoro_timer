@@ -146,6 +146,10 @@
     cursor: pointer;
     box-shadow: 0 0 5px #737373;
   }
+  .backbutton:hover{
+    background-color: #528C84;
+  box-shadow:0px 0px 8px #737373 
+  }
   
   .backtext {
     font-weight: bold;
