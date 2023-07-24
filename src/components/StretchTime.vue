@@ -15,7 +15,6 @@
             
               <video width="500" height="800" src="/shoulder.mov" autoplay muted playsinline style="margin-left: -4%;" id="trainervideo"></video>
             
-            
       </div>  
 
       <div class="settingbutton">

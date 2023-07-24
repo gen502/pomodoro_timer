@@ -51,6 +51,14 @@ import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 import CogIcon from "vue-material-design-icons/Cog.vue";
 import { mapState } from 'vuex';
 // import { useRouter } from 'vue-router'
+var webSocket; //ウェブソケット
+
+// サーバにメッセージを送信する関数
+function sendMessage(message){
+  console.dir(message);
+  webSocket.send(JSON.stringify(message));
+}
+
 
 export default {
     data() {
@@ -79,6 +87,32 @@ export default {
         CogIcon
     },
     mounted() {
+        var msg = {
+            'option' : 'timer_start',
+        }
+        webSocket = new WebSocket("ws://localhost:8001"); // インスタンスを作り、サーバと接続
+
+        // ソケット接続すれば呼び出す関数を設定
+        webSocket.onopen = function(message){
+            console.log(message);
+            sendMessage(msg);
+        };
+
+        // ソケット接続が切ると呼び出す関数を設定
+        webSocket.onclose = function(message){
+            console.log(message);
+        };
+
+        // ソケット通信中でエラーが発生すれば呼び出す関数を設定
+        webSocket.onerror = function(message){
+            console.log(message);
+        };
+
+        // ソケットサーバからメッセージが受信すれば呼び出す関数を設定
+        webSocket.onmessage = function(message){
+            console.log(message);
+            webSocket.close();
+        };
         this.remainingTime = this.workTime * 10;
         this.startTimer();
     },
