@@ -9,6 +9,7 @@ class udprecv:
     def __init__(self):
 
         SrcIP = "10.229.40.198"  # 受信元IP
+        #SrcIP = "172.20.10.3"
         SrcPort = 5002  # 受信元ポート番号
         self.SrcAddr = (SrcIP, SrcPort)  # アドレスをtupleに格納
 

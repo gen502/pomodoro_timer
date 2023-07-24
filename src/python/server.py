@@ -5,6 +5,7 @@ import json
 import time
 from udprecv import udprecv
 from classf import PostureClassifier
+from suggest import dec_stretch
 
 
 #首,肩,背中,猫背,手首.
@@ -14,7 +15,7 @@ work_time = 1
 break_time = 1
 set_count = 1
 start = False
-suggested_list=[[0,0,0,0],[0,0],[0,0,0],[0,0,0],[0,0]]
+suggested_list=[0, 0, 0, 0, 0, 0, 0]
 video_list =  [
                 "/neck1.mov",
                 "/neck2.mov",
@@ -24,6 +25,8 @@ video_list =  [
                 "/back1.mov",
                 "/neko.mov",
               ]
+feedback_push_list = []
+feedback_pull_list = []
 suggest = [0,0]
 count = 0
 fin = False
@@ -36,7 +39,7 @@ classifier.train('posture.csv')
 # この関数に通信しているときに行う処理を書く。
 # クライアントが接続している間は下の関数が常に回っている
 async def handler(websocket):
-    global concerns, worktime, breaktime, setcount, start, estimating, estimatedlist
+    global concerns, worktime, breaktime, setcount, start, estimating, estimatedlist,feedback_push_list, feedback_pull_list
     # クライアントからのメッセージを取り出す
     async for message in websocket:
         print(message)
@@ -58,15 +61,19 @@ async def handler(websocket):
             print("stretch")
             estimating = False
             print(estimatedlist)
-            selected = estimatedlist.index(max(estimatedlist))
-            await websocket.send(video_list[selected])
+            estimate = estimatedlist.index(max(estimatedlist))
+            suggested = dec_stretch(concern, estimate, suggested_list, setcount)
+            await websocket.send(video_list[suggested])
+            suggested_list[suggested] += 1
+            feedback_push_list.append(video_list[suggested])
             estimatedlist = [0, 0, 0]
         elif option == 'finish':
             start = False
             print("実施したストレッチを返す?")
-            await websocket.send("ストレッチたち,json?")
+            await websocket.send(feedback_push_list)
         elif option == 'feedback':
             print("フィードバックを受け取る")
+            #feedback_pull_list = data['feedbacklist']
             await websocket.send("ok")
 
         

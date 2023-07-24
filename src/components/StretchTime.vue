@@ -224,7 +224,7 @@ export default {
 }
 
 video{
-  clip-path:circle(40% at 50% 50%);
+  clip-path:circle(30% at 50% 35%);
 }
 
 .trainer{
