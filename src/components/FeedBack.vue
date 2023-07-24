@@ -2,7 +2,7 @@
     <div class="FeedBack">
       <div class="comment1">今回のストレッチはどうでしたか？</div>
       <!-- 行ったストレッチの情報を受け取る -->
-      <div v-for="index in setCount" :key="index" class="StretchFB">
+      <div v-for="index in computedSetCount" :key="index" class="StretchFB">
         <div class="Stretch"></div>
         <div class="FB">
           <div class="icon-wrapper">
@@ -32,15 +32,23 @@
   <script>
   import ThumbUpOutline from "vue-material-design-icons/ThumbUpOutline.vue";
   import ThumbDownOutline from "vue-material-design-icons/ThumbDownOutline.vue";
+  import { mapState } from 'vuex';
   
   export default {
+    computed: {
+        ...mapState(['firstSet']),
+        computedSetCount() {
+        return this.firstSet; // this.setCountをcomputedSetCountとして利用
+    },
+        
+    },
     components: {
       ThumbUpOutline,
       ThumbDownOutline,
     },
     data() {
       return {
-        setCount: 5, // 表示するセット数を指定
+
         feedbackValues: {}, // アイコンの状態を保持するためのオブジェクト
       };
     },

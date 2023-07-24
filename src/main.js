@@ -9,6 +9,7 @@ const store = createStore({
         workTime: 0,
         breakTime: 0,
         setCount: 0,
+        firstSet: 0,
     },
     mutations: {
         setWorkTime(state, value) {
@@ -20,6 +21,9 @@ const store = createStore({
         setSetCount(state, value) {
             state.setCount = value;
         },
+        setFirstSet(state, value) {
+            state.firstSet = value;
+          },
         decreaseSetCount(state) {
             state.setCount--;
           }

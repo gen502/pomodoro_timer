@@ -119,7 +119,7 @@ export default {
             this.concerns[id] = !this.concerns[id];
             console.log(this.concerns);
         },
-        ...mapMutations(['setWorkTime', 'setBreakTime', 'setSetCount']),
+        ...mapMutations(['setWorkTime', 'setBreakTime', 'setSetCount','setFirstSet']),
         async saveSettings() {
             const concernsArray = Object.keys(this.concerns).map(key => this.concerns[key] ? 1 : 0);
             console.log(concernsArray);
@@ -195,6 +195,7 @@ export default {
             this.setWorkTime(workTime);
             this.setBreakTime(breakTime);
             this.setSetCount(setCount);
+            this.setFirstSet(setCount);
             this.$router.push('/firsttimer');
         }
     },
