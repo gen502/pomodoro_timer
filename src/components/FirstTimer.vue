@@ -54,7 +54,7 @@
                 <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
             </div>
             <!-- 最小化ボタン -->
-            <button class="minimize-button" @click="toggleMinimize" style="color: white;">
+            <button class="minimize-button" @click="toggleMinimize" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave" style="color: white;">
                 <WatermarkIcon :size="18" style="margin-right: 1px; margin-top: 2px;"/>
             </button>
         </div>
@@ -69,6 +69,8 @@ import ResetIcon from "vue-material-design-icons/Restore.vue";
 import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 import CogIcon from "vue-material-design-icons/Cog.vue";
 import { mapState } from 'vuex';
+const { remote } = require('electron')
+const win = remote.getCurrentWindow()
 // import { useRouter } from 'vue-router'
 
 export default {
@@ -104,8 +106,20 @@ export default {
     methods: {
         async toggleMinimize() {
             const { ipcRenderer } = require('electron');
-            await ipcRenderer.invoke('toggle-minimize');
+            if (this.isMinimized) {
+                await ipcRenderer.invoke('set-ignore-mouse-events', false);
+            } else {
+                await ipcRenderer.invoke('set-ignore-mouse-events', true);
+            }
             this.isMinimized = !this.isMinimized;
+        },
+        onMouseEnter() {
+            // 要素にマウスポインタが乗っている間、マウスイベントの無視をやめる
+            win.setIgnoreMouseEvents(false)
+        },
+        onMouseLeave() {
+            // 要素からマウスが離れたら、マウスイベントを無視する
+            win.setIgnoreMouseEvents(true, { forward: true })
         },
         startTimer() {
             this.timer = setInterval(this.updateRemainingTime, 1000); // 1秒ごとに残り時間を更新

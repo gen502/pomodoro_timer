@@ -14,13 +14,13 @@ protocol.registerSchemesAsPrivileged([
 let isWindowMinimized = false; // ウィンドウが縮小されているかどうかのフラグ
 let originalSize = { width: 800, height: 600 }; // ウィンドウの元のサイズ
 let originalPosition = { x: 0, y: 0 }; // ウィンドウの元の位置
-let minimizedWindow = null; // 最小化ウィンドウを参照するための変数
+let isCursorOverMinimizeButtonLastState = false;
 
-ipcMain.handle('toggle-minimize', () => {
+ipcMain.handle('set-ignore-mouse-events', (event, ignore) => {
   console.log("toggle-minimize called");
   const win = BrowserWindow.getFocusedWindow();
   if (win) {
-    if (!isWindowMinimized) {
+    if (ignore) {
       console.log("Minimizing window");
       // ウィンドウの元のサイズと位置を保存
       originalSize = win.getSize();
@@ -38,10 +38,7 @@ ipcMain.handle('toggle-minimize', () => {
       win.setAlwaysOnTop(true);
 
       // ウィンドウを透明にする
-      win.setOpacity(0.7);
-
-      // ウィンドウ上のマウスイベントを無視
-      win.setIgnoreMouseEvents(true, { forward: true });
+      win.setOpacity(0.3);
 
       // 最小化ボタンの領域を取得する関数
       function getMinimizeButtonBounds(win) {
@@ -56,8 +53,7 @@ ipcMain.handle('toggle-minimize', () => {
         };
       }
 
-      // 最小化ボタンの領域のマウスイベントを前方に転送する関数
-      win.webContents.on('cursor-changed', (event, type, image, scale, size) => {
+      win.webContents.on('cursor-changed', (_, _type, _image, _scale, _size) => {
         const cursorPosition = screen.getCursorScreenPoint();
         const minimizeButtonBounds = getMinimizeButtonBounds(win);
         const isCursorOverMinimizeButton = cursorPosition.x >= minimizeButtonBounds.x &&
@@ -65,10 +61,16 @@ ipcMain.handle('toggle-minimize', () => {
           cursorPosition.y >= minimizeButtonBounds.y &&
           cursorPosition.y <= minimizeButtonBounds.y + minimizeButtonBounds.height;
 
-        win.setIgnoreMouseEvents(!isCursorOverMinimizeButton, { forward: true });
+        // カーソルの状態が変わったときだけ win.setIgnoreMouseEvents を呼び出す
+        if (isCursorOverMinimizeButton !== isCursorOverMinimizeButtonLastState) {
+          win.setIgnoreMouseEvents(!isCursorOverMinimizeButton, { forward: true });
+          isCursorOverMinimizeButtonLastState = isCursorOverMinimizeButton;
+        }
       });
 
+      win.setIgnoreMouseEvents(true, { forward: true });
       isWindowMinimized = true;
+
     } else {
       console.log("Restoring window");
       // ウィンドウのサイズと位置を元に戻す
@@ -81,9 +83,7 @@ ipcMain.handle('toggle-minimize', () => {
       // ウィンドウの透明度を元に戻す
       win.setOpacity(1.0);
 
-      // ウィンドウ上のマウスイベントを再度有効にする
       win.setIgnoreMouseEvents(false);
-
       isWindowMinimized = false;
     }
   }
@@ -96,16 +96,17 @@ async function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      enableRemoteModule: true
     },
-    //frame: false  // フレームをオフにする
+    frame: false,  // フレームをオフにする
   })
 
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    // if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
