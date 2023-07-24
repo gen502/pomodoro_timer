@@ -32,10 +32,8 @@
   <script>
   import ThumbUpOutline from "vue-material-design-icons/ThumbUpOutline.vue";
   import ThumbDownOutline from "vue-material-design-icons/ThumbDownOutline.vue";
-<<<<<<< HEAD
   import { mapState } from 'vuex';
   
-=======
   var webSocket; //ウェブソケット
   function connect(msg){
       webSocket = new WebSocket("ws://localhost:8001"); // インスタンスを作り、サーバと接続
@@ -71,7 +69,6 @@
   }
 
 
->>>>>>> 29f6594766d1165a78d0b1a3a5f7164dff638a0f
   export default {
     computed: {
         ...mapState(['firstSet']),
