@@ -127,7 +127,10 @@ async def other_task():
 #     # ここに別の非同期処理を記述する
     udp = udprecv()     # クラス呼び出し
     while True:
-        #udp.recv()          # 関数実行 
+        udp.recv()          # 関数実行 
+
+
+
 #         print("別の処理を実行中...")
 #         if start:
 #             fin = True
