@@ -14,6 +14,7 @@ protocol.registerSchemesAsPrivileged([
 let isWindowMinimized = false; // ウィンドウが縮小されているかどうかのフラグ
 let originalSize = { width: 800, height: 600 }; // ウィンドウの元のサイズ
 let originalPosition = { x: 0, y: 0 }; // ウィンドウの元の位置
+let minimizedWindow = null; // 最小化ウィンドウを参照するための変数
 
 ipcMain.handle('toggle-minimize', () => {
   console.log("toggle-minimize called");
@@ -33,12 +34,55 @@ ipcMain.handle('toggle-minimize', () => {
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
       win.setPosition(width - 490, height - 490);
 
+      // ウィンドウを最前面に固定
+      win.setAlwaysOnTop(true);
+
+      // ウィンドウを透明にする
+      win.setOpacity(0.7);
+
+      // ウィンドウ上のマウスイベントを無視
+      win.setIgnoreMouseEvents(true, { forward: true });
+
+      // 最小化ボタンの領域を取得する関数
+      function getMinimizeButtonBounds(win) {
+        const winBounds = win.getBounds();
+        const buttonSize = 40; // 最小化ボタンのサイズ
+        const buttonMargin = 7; // 最小化ボタンのマージン
+        return {
+          x: winBounds.x + winBounds.width - buttonSize - buttonMargin * 2,
+          y: winBounds.y + winBounds.height - buttonSize - buttonMargin * 2,
+          width: buttonSize,
+          height: buttonSize
+        };
+      }
+
+      // 最小化ボタンの領域のマウスイベントを前方に転送する関数
+      win.webContents.on('cursor-changed', (event, type, image, scale, size) => {
+        const cursorPosition = screen.getCursorScreenPoint();
+        const minimizeButtonBounds = getMinimizeButtonBounds(win);
+        const isCursorOverMinimizeButton = cursorPosition.x >= minimizeButtonBounds.x &&
+          cursorPosition.x <= minimizeButtonBounds.x + minimizeButtonBounds.width &&
+          cursorPosition.y >= minimizeButtonBounds.y &&
+          cursorPosition.y <= minimizeButtonBounds.y + minimizeButtonBounds.height;
+
+        win.setIgnoreMouseEvents(!isCursorOverMinimizeButton, { forward: true });
+      });
+
       isWindowMinimized = true;
     } else {
       console.log("Restoring window");
       // ウィンドウのサイズと位置を元に戻す
       win.setSize(originalSize[0], originalSize[1]);
-      // win.setPosition(originalPosition[0], originalPosition[1]);
+      win.setPosition(originalPosition[0], originalPosition[1]);
+
+      // 最前面固定を解除
+      win.setAlwaysOnTop(false);
+
+      // ウィンドウの透明度を元に戻す
+      win.setOpacity(1.0);
+
+      // ウィンドウ上のマウスイベントを再度有効にする
+      win.setIgnoreMouseEvents(false);
 
       isWindowMinimized = false;
     }
@@ -53,8 +97,10 @@ async function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
-    }
+    },
+    //frame: false  // フレームをオフにする
   })
+
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

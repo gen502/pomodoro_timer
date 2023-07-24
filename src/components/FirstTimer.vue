@@ -105,6 +105,7 @@ export default {
         async toggleMinimize() {
             const { ipcRenderer } = require('electron');
             await ipcRenderer.invoke('toggle-minimize');
+            this.isMinimized = !this.isMinimized;
         },
         startTimer() {
             this.timer = setInterval(this.updateRemainingTime, 1000); // 1秒ごとに残り時間を更新
