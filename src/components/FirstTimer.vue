@@ -18,10 +18,10 @@
             </svg>
 
             <div class="button-container">
-                <button class="play-pause-button" @click="toggleTimer" style="color: white;" :disabled="isMinimized && !isCursorOverMinimizeButton">
+                <button class="play-pause-button" @click="toggleTimer" style="color: white;">
                     <component :is="timerRunning ? 'PauseIcon' : 'PlayIcon'" />
                 </button>
-                <button class="reset-button" @click="resetTimer" style="color: white;" :disabled="isMinimized && !isCursorOverMinimizeButton">
+                <button class="reset-button" @click="resetTimer" style="color: white;">
                     <ResetIcon :size="25" />
                 </button>
             </div>
@@ -148,6 +148,12 @@ export default {
             if (this.remainingTime > 0) {
                 this.remainingTime--; // 残り時間を1秒減らす
                 this.progressRatio = (this.remainingTime / (this.workTime * 10)) * 100; // 残り時間の割合を計算
+
+                // 残り時間が5秒の場合、ウィンドウが最小化されているか確認
+                if (this.remainingTime === 3 && this.isMinimized) {
+                    this.toggleMinimize(); // ウィンドウを元のサイズに戻す
+                }
+
             } else {
                 this.stopTimer();
                 this.$router.push('/stretch');
