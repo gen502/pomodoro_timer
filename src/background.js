@@ -22,6 +22,10 @@ ipcMain.handle('set-ignore-mouse-events', (event, ignore) => {
   if (win) {
     if (ignore) {
       console.log("Minimizing window");
+
+      win.setIgnoreMouseEvents(true, { forward: true });
+      isWindowMinimized = true;
+      
       // ウィンドウの元のサイズと位置を保存
       originalSize = win.getSize();
       originalPosition = win.getPosition();
@@ -38,7 +42,7 @@ ipcMain.handle('set-ignore-mouse-events', (event, ignore) => {
       win.setAlwaysOnTop(true);
 
       // ウィンドウを透明にする
-      win.setOpacity(0.3);
+      win.setOpacity(0.5);
 
       // 最小化ボタンの領域を取得する関数
       function getMinimizeButtonBounds(win) {
@@ -68,11 +72,10 @@ ipcMain.handle('set-ignore-mouse-events', (event, ignore) => {
         }
       });
 
-      win.setIgnoreMouseEvents(true, { forward: true });
-      isWindowMinimized = true;
-
     } else {
       console.log("Restoring window");
+      win.setIgnoreMouseEvents(false);
+      isWindowMinimized = false;
       // ウィンドウのサイズと位置を元に戻す
       win.setSize(originalSize[0], originalSize[1]);
       win.setPosition(originalPosition[0], originalPosition[1]);
@@ -82,9 +85,6 @@ ipcMain.handle('set-ignore-mouse-events', (event, ignore) => {
 
       // ウィンドウの透明度を元に戻す
       win.setOpacity(1.0);
-
-      win.setIgnoreMouseEvents(false);
-      isWindowMinimized = false;
     }
   }
 });

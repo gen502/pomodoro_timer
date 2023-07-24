@@ -18,10 +18,10 @@
             </svg>
 
             <div class="button-container">
-                <button class="play-pause-button" @click="toggleTimer" style="color: white;">
+                <button class="play-pause-button" @click="toggleTimer" style="color: white;" :disabled="isMinimized && !isCursorOverMinimizeButton">
                     <component :is="timerRunning ? 'PauseIcon' : 'PlayIcon'" />
                 </button>
-                <button class="reset-button" @click="resetTimer" style="color: white;">
+                <button class="reset-button" @click="resetTimer" style="color: white;" :disabled="isMinimized && !isCursorOverMinimizeButton">
                     <ResetIcon :size="25" />
                 </button>
             </div>
@@ -54,7 +54,7 @@
                 <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
             </div>
             <!-- 最小化ボタン -->
-            <button class="minimize-button" @click="toggleMinimize" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave" style="color: white;">
+            <button class="minimize-button" @click="toggleMinimize" style="color: white;">
                 <WatermarkIcon :size="18" style="margin-right: 1px; margin-top: 2px;"/>
             </button>
         </div>
@@ -84,6 +84,7 @@ export default {
             progressColor: "#4FA095", // ゲージの色
             timerRunning: true, // タイマーが実行中かどうかのフラグ
             isMinimized: false, // 最小化されているかどうかのフラグ
+            isCursorOverMinimizeButton: false,
         };
     },
     computed: {
@@ -108,17 +109,18 @@ export default {
             const { ipcRenderer } = require('electron');
             if (this.isMinimized) {
                 await ipcRenderer.invoke('set-ignore-mouse-events', false);
+                this.isMinimized = false;
             } else {
                 await ipcRenderer.invoke('set-ignore-mouse-events', true);
+                this.isMinimized = true;
             }
-            this.isMinimized = !this.isMinimized;
         },
         onMouseEnter() {
-            // 要素にマウスポインタが乗っている間、マウスイベントの無視をやめる
+            this.isCursorOverMinimizeButton = true;
             win.setIgnoreMouseEvents(false)
         },
         onMouseLeave() {
-            // 要素からマウスが離れたら、マウスイベントを無視する
+            this.isCursorOverMinimizeButton = false;
             win.setIgnoreMouseEvents(true, { forward: true })
         },
         startTimer() {
@@ -229,12 +231,13 @@ export default {
     background-color: #58bfa7;
 }
 
-.settingcontainer{
+.settingcontainer {
     display: flex;
     position: fixed;
     right: 20px;
     bottom: 20px;
 }
+
 .minimize-button {
     width: 40px;
     height: 40px;
@@ -258,8 +261,10 @@ export default {
     padding: 5px 10px;
     font-size: 50px;
     font-weight: bold;
-    width: 100vw; /* 幅を追加 */
-    height: 100vh; /* 高さを追加 */
+    width: 100vw;
+    /* 幅を追加 */
+    height: 100vh;
+    /* 高さを追加 */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -267,15 +272,15 @@ export default {
 }
 
 
-.setting{
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background:#92A09E;
-  margin: 7px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+.setting {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #92A09E;
+    margin: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 </style>
