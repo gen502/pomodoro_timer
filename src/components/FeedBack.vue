@@ -32,7 +32,41 @@
   <script>
   import ThumbUpOutline from "vue-material-design-icons/ThumbUpOutline.vue";
   import ThumbDownOutline from "vue-material-design-icons/ThumbDownOutline.vue";
-  
+  var webSocket; //ウェブソケット
+  function connect(msg){
+      webSocket = new WebSocket("ws://localhost:8001"); // インスタンスを作り、サーバと接続
+
+      // ソケット接続すれば呼び出す関数を設定
+      webSocket.onopen = function(message){
+        console.log(message);
+        sendMessage(msg);
+      };
+
+      // ソケット接続が切ると呼び出す関数を設定
+      webSocket.onclose = function(message){
+        console.log(message);
+      };
+
+      // ソケット通信中でエラーが発生すれば呼び出す関数を設定
+      webSocket.onerror = function(message){
+        console.log(message);
+      };
+
+      // ソケットサーバからメッセージが受信すれば呼び出す関数を設定
+      webSocket.onmessage = function(message){
+        console.log(message);
+        webSocket.close();
+      };
+      
+
+    }
+  // サーバにメッセージを送信する関数
+  function sendMessage(message){
+    console.dir(message);
+    webSocket.send(JSON.stringify(message));
+  }
+
+
   export default {
     components: {
       ThumbUpOutline,
@@ -62,8 +96,18 @@
         }
       },
       goToSetting() {
-        this.$router.push('/setting');
+        var msg = {
+              'option' : 'feedback', //ここにfeedbackする情報を追加
+          }
+        connect(msg);
+          this.$router.push('/setting');
+        },
       },
+    mounted() {
+      var msg = {
+            'option' : 'finish',
+        }
+      connect(msg);
     },
   };
   </script>

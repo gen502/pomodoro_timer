@@ -83,18 +83,11 @@ import axios from 'axios';
 
 var webSocket; //ウェブソケット
 
-
-    // サーバにメッセージを送信する関数
-    function sendMessage(message){
-      //var message = document.getElementById("textMessage");
-      //console.log(message.value);
-      //var message = {"id": 12, "name":"gen"};
-      //messageTextArea.value += "Send => "+message.value+"\n";
-      //webSocket.send(message.value);
-      console.dir(message);
-      webSocket.send(JSON.stringify(message));
-      //message.value = "";
-    }
+// サーバにメッセージを送信する関数
+function sendMessage(message){
+    console.dir(message);
+    webSocket.send(JSON.stringify(message));
+}
 
    
 
@@ -173,6 +166,7 @@ export default {
             // ソケットサーバからメッセージが受信すれば呼び出す関数を設定
             webSocket.onmessage = function(message){
                 console.log(message);
+                webSocket.close();
                 //messageTextArea.value += "Receive => "+message.data+"\n";
             };
             

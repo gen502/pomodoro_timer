@@ -44,19 +44,25 @@ async def handler(websocket):
             break_time = data['break_time']
             set_count = data['set_count']
             start = True
+            await websocket.send("ok")
         elif option == 'timer_start':
             estimating = True
             print("timerがスタートしたことを受け取る")
+            await websocket.send("ok")
         elif option == 'stretch':
             print("stretch")
             estimating = False
+            print(estimatedlist)
+            selected = estimatedlist.index(max(estimatedlist))
+            await websocket.send(video_list[selected])
             estimatedlist = [0, 0, 0]
-            await websocket.send(video_list[max(estimatedlist)])
         elif option == 'finish':
             start = False
             print("実施したストレッチを返す?")
+            await websocket.send("ストレッチたち,json?")
         elif option == 'feedback':
             print("フィードバックを受け取る")
+            await websocket.send("ok")
 
         
         # print(type(data['break_time']))
@@ -67,7 +73,8 @@ async def get_estimate_task():
     global estimatedlist
     while True:
         if estimating:
-            get = 0
+            print("estim")
+            get = 0 #姿勢推定の結果を受け取る
             estimatedlist[get] += 1
         print("姿勢推定を受け取る")
         await asyncio.sleep(1)
