@@ -6,22 +6,33 @@ import time
 
 
 
-concerns = [0, 0, 0, 0, 1]
+concerns = [0, 0, 0, 0, 0]
 work_time = 1
 break_time = 1
 set_count = 1
 start = False
 suggested_list=[[0,0,0,0],[0,0],[0,0,0],[0,0,0],[0,0]]
+video_list =  [
+                "/neck1.mov",
+                "/neck2.mov",
+                "/neck3.mov",
+                "/neck4.mov",
+                "/back1.mov",
+                "/shoulder.mov",
+                "/neko.mov",
+              ]
 suggest = [0,0]
 count = 0
 fin = False
+estimating = False
+estimatedlist = [0, 0, 0]
 
 
 # この関数に通信しているときに行う処理を書く。
 # クライアントが接続している間は下の関数が常に回っている
 async def handler(websocket):
-    global concerns, worktime, breaktime, setcount, start
-    # クライアントからのメッセージを取り出してそのまま送り返す（Echo）
+    global concerns, worktime, breaktime, setcount, start, estimating, estimatedlist
+    # クライアントからのメッセージを取り出す
     async for message in websocket:
         print(message)
         print(json.loads(message))
@@ -33,13 +44,33 @@ async def handler(websocket):
             break_time = data['break_time']
             set_count = data['set_count']
             start = True
+        elif option == 'timer_start':
+            estimating = True
+            print("timerがスタートしたことを受け取る")
         elif option == 'stretch':
             print("stretch")
-            await websocket.send("/neko.mov")
+            estimating = False
+            estimatedlist = [0, 0, 0]
+            await websocket.send(video_list[max(estimatedlist)])
+        elif option == 'finish':
+            start = False
+            print("実施したストレッチを返す?")
+        elif option == 'feedback':
+            print("フィードバックを受け取る")
+
         
         # print(type(data['break_time']))
         # print(type(data['set_count']))
         print(concerns)
+
+async def get_estimate_task():
+    global estimatedlist
+    while True:
+        if estimating:
+            get = 0
+            estimatedlist[get] += 1
+        print("姿勢推定を受け取る")
+        await asyncio.sleep(1)
 
 async def other_task():
     global suggested_list, suggest, count, start, fin
@@ -47,14 +78,6 @@ async def other_task():
     while True:
         print("別の処理を実行中...")
         if start:
-            #姿勢の評価を集計、一番多かった結果を最終結果とし変数workに格納
-            if not fin:
-                start_time = time.time()
-                while(time.time() - start_time < 1):
-                    None
-                
-                None
-                work = 2
             fin = True
             print("aaa")
             if fin:
@@ -88,6 +111,7 @@ async def main():
 
     # 別の非同期処理を開始する
     asyncio.create_task(other_task())
+    asyncio.create_task(get_estimate_task())
 
     # サーバーが終了するまで待機する
     await server.wait_closed()
