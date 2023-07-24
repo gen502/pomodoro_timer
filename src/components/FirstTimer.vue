@@ -2,7 +2,7 @@
 </head>
 
 <template>
-    <div class="Time">
+    <div class="Time" :class="{ 'minimized': isMinimized }">
         <!-- ゲージと時間の表示 -->
         <div class="circle-progress" v-if="!isMinimized">
             <svg xmlns="http://www.w3.org/2000/svg" class="progress-ring" :width="circleSize" :height="circleSize">
@@ -26,12 +26,31 @@
                 </button>
             </div>
         </div>
-        <div class="minimized-timer" style="color: white;" v-else>
-            {{ formatTime(remainingTime) }}
+        <div class="minimized-timer" v-else>
+            <svg xmlns="http://www.w3.org/2000/svg" class="progress-ring" :width="circleSize" :height="circleSize">
+                <circle class="progress-ring-circle" :stroke="progressColor" stroke-width="20" fill="transparent"
+                    :r="circleRadius" :cx="circleCenter" :cy="circleCenter"
+                    :style="{ strokeDasharray: getCircumference(), strokeDashoffset: progressOffset }"></circle>
+                <g :transform="`translate(${circleCenter}, ${circleCenter})`">
+                    <text class="progress-text" dominant-baseline="middle" text-anchor="middle"
+                        :style="{ fill: progressColor }">
+                        {{ formatTime(remainingTime) }}
+                    </text>
+                </g>
+            </svg>
+
+            <div class="button-container">
+                <button class="play-pause-button" @click="toggleTimer" style="color: white;">
+                    <component :is="timerRunning ? 'PauseIcon' : 'PlayIcon'" />
+                </button>
+                <button class="reset-button" @click="resetTimer" style="color: white;">
+                    <ResetIcon :size="25" />
+                </button>
+            </div>
         </div>
 
         <div class="settingcontainer">
-            <div class="setting" style="color: white;">
+            <div class="setting" style="color: white;" @click="navigateToSettings">
                 <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
             </div>
             <!-- 最小化ボタン -->
@@ -50,6 +69,8 @@ import ResetIcon from "vue-material-design-icons/Restore.vue";
 import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 import CogIcon from "vue-material-design-icons/Cog.vue";
 import { mapState } from 'vuex';
+const { remote } = require('electron')
+const win = remote.getCurrentWindow()
 // import { useRouter } from 'vue-router'
 var webSocket; //ウェブソケット
 
@@ -71,6 +92,7 @@ export default {
             progressColor: "#4FA095", // ゲージの色
             timerRunning: true, // タイマーが実行中かどうかのフラグ
             isMinimized: false, // 最小化されているかどうかのフラグ
+            isCursorOverMinimizeButton: false,
         };
     },
     computed: {
@@ -117,8 +139,23 @@ export default {
         this.startTimer();
     },
     methods: {
-        toggleMinimize() {
-            this.isMinimized = !this.isMinimized;
+        async toggleMinimize() {
+            const { ipcRenderer } = require('electron');
+            if (this.isMinimized) {
+                await ipcRenderer.invoke('set-ignore-mouse-events', false);
+                this.isMinimized = false;
+            } else {
+                await ipcRenderer.invoke('set-ignore-mouse-events', true);
+                this.isMinimized = true;
+            }
+        },
+        onMouseEnter() {
+            this.isCursorOverMinimizeButton = true;
+            win.setIgnoreMouseEvents(false)
+        },
+        onMouseLeave() {
+            this.isCursorOverMinimizeButton = false;
+            win.setIgnoreMouseEvents(true, { forward: true })
         },
         startTimer() {
             this.timer = setInterval(this.updateRemainingTime, 1000); // 1秒ごとに残り時間を更新
@@ -145,6 +182,12 @@ export default {
             if (this.remainingTime > 0) {
                 this.remainingTime--; // 残り時間を1秒減らす
                 this.progressRatio = (this.remainingTime / (this.workTime * 10)) * 100; // 残り時間の割合を計算
+            
+            // 残り時間が5秒の場合、ウィンドウが最小化されているか確認
+            if (this.remainingTime === 3 && this.isMinimized) {
+                this.toggleMinimize(); // ウィンドウを元のサイズに戻す
+            }    
+            
             } else {
                 this.stopTimer();
                 this.$router.push('/stretch');
@@ -158,6 +201,9 @@ export default {
         getCircumference() {
             const radius = this.circleRadius;
             return 2 * Math.PI * radius;
+        },
+        navigateToSettings() {
+            this.$router.push('/setting');
         },
     },
 };
@@ -250,13 +296,18 @@ export default {
 
 .minimized-timer {
     position: fixed;
-    right: 20px;
-    bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.6);
     border-radius: 12px;
     padding: 5px 10px;
-    font-size: 24px;
+    font-size: 50px;
     font-weight: bold;
+    width: 100vw;
+    /* 幅を追加 */
+    height: 100vh;
+    /* 高さを追加 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .setting{

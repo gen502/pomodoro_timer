@@ -57,13 +57,13 @@
                     <div class="subtitle" style="color: #5B5B5B;">体の悩み</div>
                     <div class="options">
                         <div class="optionsnarabi" style="margin-top: -15px;">
-                            <p class="option" :class="{ selected: concerns.首こり }" @click="toggleConcern('首こり')">首こり</p>
-                            <p class="option" :class="{ selected: concerns.肩こり }" @click="toggleConcern('肩こり')">肩こり</p>
-                            <p class="option" :class="{ selected: concerns.背中痛 }" @click="toggleConcern('背中痛')">背中痛</p>
+                            <p class="option" :class="{ selected: concerns.首こり, hover: hoverItem === '首こり' }" @click="toggleConcern('首こり')" @mouseover="setHoverItem('首こり')" @mouseleave="clearHoverItem">首こり</p>
+                            <p class="option" :class="{ selected: concerns.肩こり, hover: hoverItem === '肩こり' }" @click="toggleConcern('肩こり')" @mouseover="setHoverItem('肩こり')" @mouseleave="clearHoverItem">肩こり</p>
+                            <p class="option" :class="{ selected: concerns.背中痛, hover: hoverItem === '背中痛' }" @click="toggleConcern('背中痛')" @mouseover="setHoverItem('背中痛')" @mouseleave="clearHoverItem">背中痛</p>
                         </div>
                         <div class="optionsnarabi2">    
-                            <p class="option" :class="{ selected: concerns.猫背 }" @click="toggleConcern('猫背')">猫背</p>
-                            <p class="option" :class="{ selected: concerns.手首 }" @click="toggleConcern('手首')">手首</p>
+                            <p class="option" :class="{ selected: concerns.猫背, hover: hoverItem === '猫背' }" @click="toggleConcern('猫背')" @mouseover="setHoverItem('猫背')" @mouseleave="clearHoverItem">猫背</p>
+                            <p class="option" :class="{ selected: concerns.手首, hover: hoverItem === '手首' }" @click="toggleConcern('手首')" @mouseover="setHoverItem('手首')" @mouseleave="clearHoverItem">手首</p>
                         </div>   
                         </div><br>
                 </div>    
@@ -101,8 +101,10 @@ export default {
                 '背中痛': false,
                 '猫背': false,
                 '手首': false
-            }
+            },
+            hoverItem: null,
         };
+        
     },
     methods: {
         selectOption(id) {
@@ -191,7 +193,14 @@ export default {
             this.setSetCount(setCount);
             this.setFirstSet(setCount);
             this.$router.push('/firsttimer');
-        }
+        },
+        setHoverItem(item) {
+            this.hoverItem = item;
+            },
+
+            clearHoverItem() {
+            this.hoverItem = null;
+            },
     },
     mounted() {
         const options = document.querySelectorAll('.option');
@@ -284,7 +293,10 @@ select {
     border-radius: 20px;
     cursor: pointer;
 }
-
+.options .option.hover {
+  background-color: #999;
+  color: #fff;
+}
 .option.selected {
     background-color: #999;
     color: #fff;

@@ -27,9 +27,9 @@
         <div class="setting" style="color: white;">
           <CogIcon :size="23" style="margin-right: 2px; margin-top: 5px;" />
         </div>
-        <button class="minimize-button" @click="toggleMinimize" style="color: white;">
+        <!-- <button class="minimize-button" @click="toggleMinimize" style="color: white;">
                 <WatermarkIcon :size="18" style="margin-right: 1px; margin-top: 2px;"/>
-        </button>
+        </button> -->
 
       </div>
     
@@ -41,7 +41,7 @@
 import PauseIcon from "vue-material-design-icons/Pause.vue";
 import PlayIcon from "vue-material-design-icons/Play.vue";
 import ResetIcon from "vue-material-design-icons/Restore.vue";
-import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
+// import WatermarkIcon from "vue-material-design-icons/Watermark.vue";
 import CogIcon from "vue-material-design-icons/Cog.vue";
 import { mapState, mapMutations } from 'vuex';
 // import videojs from 'video.js';
@@ -111,7 +111,7 @@ export default {
         PauseIcon,
         PlayIcon,
         ResetIcon,
-        WatermarkIcon,
+        // WatermarkIcon,
         CogIcon,
     },
   methods: {

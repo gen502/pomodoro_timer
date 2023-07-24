@@ -4,11 +4,39 @@ import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const { ipcMain } = require('electron');
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
+
+let isWindowMinimized = false; // ウィンドウが縮小されているかどうかのフラグ
+let originalSize = { width: 800, height: 600 }; // ウィンドウの元のサイズ
+let originalPosition = { x: 0, y: 0 }; // ウィンドウの元の位置
+
+ipcMain.handle('set-ignore-mouse-events', (event, ignore) => {
+  const win = BrowserWindow.getFocusedWindow();
+  if (win) {
+    if (ignore) {
+      isWindowMinimized = true;
+      originalSize = win.getSize();
+      originalPosition = win.getPosition();
+      win.setSize(500, 500);
+      const { screen } = require('electron');
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+      win.setPosition(width - 490, height - 490);
+      win.setAlwaysOnTop(true);
+      win.setOpacity(0.5);
+    } else {
+      isWindowMinimized = false;
+      win.setSize(originalSize[0], originalSize[1]);
+      win.setPosition(originalPosition[0], originalPosition[1]);
+      win.setAlwaysOnTop(false);
+      win.setOpacity(1.0);
+    }
+  }
+});
 
 async function createWindow() {
   // Create the browser window.
@@ -19,9 +47,14 @@ async function createWindow() {
       
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
-    }
+      // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      // contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    },
+    frame: false,  // フレームをオフにする
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
