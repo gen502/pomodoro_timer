@@ -8,7 +8,7 @@ from classf import PostureClassifier
 from suggest import dec_stretch
 
 
-#首,肩,背中,猫背,手首.
+#首,肩,背中,猫背,手首の体の悩み.
 concerns = [0, 0, 0, 0, 0]
 
 work_time = 1
@@ -37,6 +37,7 @@ img_list = [
 feedback_push_list = []
 suggested_index_list = []
 feedback_pull_list = []
+stretch_weight = [0, 0, 0, 0, 0, 0, 0]
 count = 0
 fin = False
 estimating = False
@@ -48,38 +49,39 @@ classifier.train('posture.csv')
 # この関数に通信しているときに行う処理を書く。
 # クライアントが接続している間は下の関数が常に回っている
 async def handler(websocket):
-    global concerns, worktime, breaktime, set_count, start, estimating, estimatedlist,feedback_push_list, feedback_pull_list, suggested_index_list
+    global concerns, worktime, breaktime, set_count, start, estimating, estimatedlist,feedback_push_list, feedback_pull_list, suggested_index_list, stretch_weight
     # クライアントからのメッセージを取り出す
     async for message in websocket:
         print(message)
         print(json.loads(message))
         data = json.loads(message)
         option = data['option']
-        if option == 'setting':
-            concerns = data['concerns']
-            work_time = data['work_time']
-            break_time = data['break_time']
-            set_count = data['set_count']
+        if option == 'setting': #設定の受け取り
+            concerns = data['concerns'] #気になる部位
+            work_time = data['work_time'] #タイマーの時間
+            break_time = data['break_time'] #ストレッチの時間
+            set_count = data['set_count'] #セット数
             feedback_push_list = []
             suggested_index_list = []
             feedback_pull_list = []
             start = True
             await websocket.send("ok")
-        elif option == 'timer_start':
-            estimating = True
+        elif option == 'timer_start': #タイマースタート
+            estimating = True #姿勢推定の取得開始
             print("timerがスタートしたことを受け取る")
             await websocket.send("ok")
-        elif option == 'stretch':
+        elif option == 'stretch': #ストレッチスタート
             print("stretch")
-            estimating = False
+            estimating = False #姿勢推定の取得終了
             print(estimatedlist)
-            estimate = estimatedlist.index(max(estimatedlist))
-            suggested = dec_stretch(concerns, estimate, suggested_list, set_count)
+            estimate = estimatedlist.index(max(estimatedlist)) #姿勢推定の集計結果
+            suggested = dec_stretch(concerns, estimate, suggested_list, set_count) #ストレッチの推薦
             await websocket.send(video_list[suggested])
-            suggested_list[suggested] += 1
+            suggested_list[suggested] += 1 
             feedback_push_list.append(img_list[suggested])
             print(video_list[suggested])
             suggested_index_list.append(suggested)
+            print(suggested_index_list)
             estimatedlist = [0, 0, 0]
         elif option == 'finish':
             start = False
@@ -93,6 +95,14 @@ async def handler(websocket):
         elif option == 'feedback':
             print("フィードバックを受け取る")
             feedback_pull_list = data['feedbacklist']
+            feedback_counter = 0
+            for i in suggested_index_list:
+                print(i)
+                print(feedback_pull_list)
+                print(stretch_weight)
+                stretch_weight[i] += feedback_pull_list[feedback_counter]
+                feedback_counter += 1
+            print(stretch_weight)
             await websocket.send("ok")
 
         
